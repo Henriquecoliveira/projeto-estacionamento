@@ -1,0 +1,26 @@
+{
+  "name": "projeto-estacionamento",
+  "version": "1.0.0",
+  "description": "Software de gerencionamento de um estacionamento utilizando Typescript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Henriquecoliveira/projeto-estacionamento.git"
+  },
+  "keywords": [],{
+  "devDependencies": {
+    "@types/node": "^24.3.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  }
+}
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Henriquecoliveira/projeto-estacionamento/issues"
+  },
+  "homepage": "https://github.com/Henriquecoliveira/projeto-estacionamento#readme"
+}
