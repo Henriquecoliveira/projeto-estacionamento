@@ -1,21 +1,22 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 // importar as bibliotecas necessárias
+Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require("fs"); // módulo para manipular arquivos
 var path = require("path"); // módulo para lidar com caminhos de arquivos
 var rs = require("readline-sync"); // módulo para receber entradas do usuário
-//define o caminho para onde as entradas serão armazenadas
+// inicia o bloco de código para armazenagem e modificação de dados no arquivo dataLog
+// define o caminho para onde as entradas serão armazenadas
 var inputData = path.resolve(__dirname, "dataLog.csv");
-//cabeçalho do CSV
+// cabeçalho do CSV
 var header = "nomeDono;cpfDono;placa;cor;modelo\n";
-//função para ler os arquivos do agendamento "caso exista"
+// função para ler os arquivos do dataLog "caso exista"
 function readDataLog() {
     try {
         var dados = fs.readFileSync(inputData, "utf-8");
-        //se o arquivo estiver vazio, retorna uma lista vazia
+        // se o arquivo estiver vazio, retorna uma lista vazia
         if (!dados.trim())
             return [];
-        // divide o conteúdo por linhas e transforma em objetos Agendamento
+        // divide o conteúdo por linhas e transforma em objetos Dados
         return dados.split("\n").map(function (linha) {
             var _a = linha.split(";"), nomeDono = _a[0], cpfDono = _a[1], placa = _a[2], cor = _a[3], modelo = _a[4];
             return {
@@ -32,7 +33,9 @@ function readDataLog() {
         return [];
     }
 }
+// inicia o bloco de código para funções e criação de objetos
 // função para salvar uma nova entrada no arquivo
+// para a entrada de novos dados no arquivo dataLog.csv
 function newInput(veiculo) {
     var linha = "".concat(veiculo.nomeDono, ";").concat(veiculo.cpfDono, ";").concat(veiculo.placa, ";").concat(veiculo.cor, ";").concat(veiculo.modelo, "\n");
     fs.appendFileSync(inputData, linha, "utf-8");
@@ -41,33 +44,50 @@ function newInput(veiculo) {
 if (!fs.existsSync(inputData) || fs.readFileSync(inputData, 'utf-8').trim() === '') {
     fs.writeFileSync(inputData, header, "utf-8");
 }
-// **NOVA PARTE DO CÓDIGO AQUI**
-function solicitarEntradaVeiculo() {
+// Entrada de veículo
+function requestNewInputOfVehicle() {
     console.log("\n--- Cadastro de Veículo ---");
-    // 1. Solicita o nome do dono
-    var nomeDono = rs.question("Digite o nome do dono do veículo: ");
-    // 2. Solicita o CPF do dono
-    var cpfDono = rs.question("Digite o CPF do dono do veículo (apenas números): ");
-    // 3. Solicita a placa do veículo
-    var placa = rs.question("Digite a placa do veículo: ");
-    // 4. Solicita a cor do veículo
-    var cor = rs.question("Digite a cor do veículo: ");
-    // 5. Solicita o modelo do veículo
-    var modelo = rs.question("Digite o modelo do veículo: ");
-    // 6. Cria um novo objeto Veiculo com as entradas do usuário
-    var novoVeiculo = {
-        nomeDono: nomeDono,
-        cpfDono: cpfDono,
-        placa: placa,
-        cor: cor,
-        modelo: modelo
-    };
-    // 7. Chama a função newInput para salvar o novo veículo no CSV
-    newInput(novoVeiculo);
-    console.log("Veículo cadastrado com sucesso!");
+    var correctInput = 0;
+    while (correctInput === 0) {
+        var nomeDono = rs.question("Digite o nome do dono do veículo: ").trim().toUpperCase();
+        var cpfDono = rs.question("Digite o CPF do dono do veículo (apenas números): ").trim();
+        var placa = rs.question("Digite a placa do veículo: ").trim().toUpperCase();
+        var cor = rs.question("Digite a cor do veículo: ").trim().toUpperCase();
+        var modelo = rs.question("Digite o modelo do veículo: \n").trim().toUpperCase();
+        // Cria um novo objeto Veiculo com as entradas do usuário
+        var newVehicle = {
+            nomeDono: nomeDono,
+            cpfDono: cpfDono,
+            placa: placa,
+            cor: cor,
+            modelo: modelo
+        };
+        // Chama a função newInput para salvar o novo veículo no CSV
+        newInput(newVehicle);
+        console.log("Veículo cadastrado com sucesso!");
+        break;
+        var correctInput_1 = 1;
+    }
 }
+// Encerrando o bloco de código para armazenagem e modificação de dados no arquivo dataLog
+// Encerrando o bloco de código para funções e criação de objetos
 // Exemplo de como chamar a função para solicitar entrada
-solicitarEntradaVeiculo();
+// requestNewInputOfVehicle();
+// Interface do usuário
+var userChoice;
+while (userChoice !== 9) {
+    console.log("Sistema de gerenciamento de estacionamento\n");
+    console.log("1 - Cadastrar entrada de veículo");
+    console.log("2 - Registrar saída de veículo");
+    console.log("3 - Relatório");
+    console.log("9 - Desligar programa");
+    userChoice = parseInt(rs.question("O que deseja fazer?")); // = Pede uma entrada ao usuário
+    //userChoice === 1
+    if (userChoice === 1) {
+        requestNewInputOfVehicle();
+        continue;
+    }
+}
 // Você pode opcionalmente ler e imprimir os dados para verificar
 console.log("\n--- Dados atuais no CSV ---");
 console.log(readDataLog());
