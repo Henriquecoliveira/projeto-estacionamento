@@ -2,12 +2,12 @@
   "compilerOptions": {
     "target": "es2016", // Versão do JavaScript de saída
     "module": "commonjs", // Sistema de módulos para Node.js
-    "outDir": "./dist", // Pasta onde os arquivos JS compilados serão colocados
+    "outDir": "/dist", // Pasta onde os arquivos JS compilados serão colocados
     "rootDir": "./", // Pasta raiz dos seus arquivos TS
     "esModuleInterop": true, // Para melhor interoperabilidade com módulos CommonJS
     "forceConsistentCasingInFileNames": true,
     "strict": true, // Habilita todas as opções de verificação de tipo strict
     "skipLibCheck": true // Pula a verificação de tipo em arquivos de declaração de biblioteca
   },
-  "include": ["./*.ts"] // Inclui todos os arquivos .ts na raiz do projeto
+  "include": ["./*.ts", "ts/index.ts"] // Inclui todos os arquivos .ts na raiz do projeto
 }
