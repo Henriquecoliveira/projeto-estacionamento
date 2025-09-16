@@ -16,7 +16,7 @@
         acompanhamento: string;
         endereco: string;
         data_hora: string;
-        mes: number;
+        mes: string;
         formaDePagamento: string;
     }
     // inicia o bloco de código para armazenagem e modificação de dados no arquivo dataLog
@@ -89,8 +89,8 @@
             const sobremesa = rs.question("Digite a sobremesa: ").trim().toUpperCase();
             const acompanhamento = rs.question("Digite o acompanhamento: ").trim(). toUpperCase();
             const endereco = rs.question("Digite o endereço do cliente: ").trim().toUpperCase();
-            // const data_hora = inserir função para puxar data e hora do sistema
-            // const mes = inserir função para puxar o mes do sistema
+            const data_hora  = rs.question("Digite a data e hgora do pedido") //inserir função para puxar data e hora do sistema
+            const mes = rs.question("Digite o mês do pedido") //inserir função para puxar o mes do sistema
             const formaDePagamento = rs.question("Digite a forma de pagamento: ").trim().toUpperCase(); 
         
             // Cria um novo objeto Pedido com as entradas do usuário
@@ -102,8 +102,8 @@
                 sobremesa,
                 acompanhamento,
                 endereco,
-                // data_hora, tirar o comentário após inserir a função
-                // mes, tirar o comentário após inserir a função
+                data_hora,
+                mes,
                 formaDePagamento,
             };
 
