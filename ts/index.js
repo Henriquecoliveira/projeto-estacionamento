@@ -131,8 +131,8 @@ function requestNewInputOfCliente() {
     while (correctInputCliente === 0) {
         var nomeCliente = rs.question("Digite o nome do cliente: ").trim().toUpperCase();
         var cpfCliente = rs.question("Digite o CPF do cliente: ").trim();
-        var phoneNumber = rs.question("Digite o telefone do cliente").trim();
-        var email = rs.question("Digite o email do cliente").trim();
+        var phoneNumber = rs.question("Digite o telefone do cliente: ").trim();
+        var email = rs.question("Digite o email do cliente: ").trim();
         // Cria um novo objeto Cliente com as entradas do usuário
         var newRequestCliente = {
             nomeCliente: nomeCliente,
@@ -161,7 +161,23 @@ while (customer_registration !== 9) {
         continue;
     }
     //customer_registration === 2
-    if (customer_registration === 1) { }
+    if (customer_registration === 2) {
+        function verificarClientesCadastrados() {
+            var cpf = rs.question("Digite o cpf do cliente cadastrado: ").trim();
+            //Lê todos os clientes cadastrados
+            var clientes = readBancoDeDadosCliente();
+            //Verifica se algum cpf bate com a lista cadastrada
+            var clienteEncontrado = clientes.find(function (c) { return c.cpfCliente === cpf; });
+            if (clienteEncontrado) {
+                console.log("O cliente ".concat(clienteEncontrado.nomeCliente, " possui cadastro!"));
+            }
+            else {
+                console.log("Este cliente ainda não foi cadastrado no sistema\n");
+                requestNewInputOfCliente();
+                //continue;
+            }
+        }
+    }
 }
 ////////////////////////////////////////////////////////////////////////
 // Interface de pedidos

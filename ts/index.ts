@@ -190,8 +190,8 @@
         while (correctInputCliente === 0) { 
             const nomeCliente = rs.question("Digite o nome do cliente: ").trim().toUpperCase();
             const cpfCliente = rs.question("Digite o CPF do cliente: ").trim();
-            const phoneNumber = rs.question("Digite o telefone do cliente").trim();
-            const email = rs.question("Digite o email do cliente").trim();
+            const phoneNumber = rs.question("Digite o telefone do cliente: ").trim();
+            const email = rs.question("Digite o email do cliente: ").trim();
         
             // Cria um novo objeto Cliente com as entradas do usuário
             const newRequestCliente: Cliente = {
@@ -225,7 +225,28 @@
        }
 
     //customer_registration === 2
-       if (customer_registration === 1) {}
+       if (customer_registration === 2) {
+        function verificarClientesCadastrados() { //função para verificar se o cliente foi cadastrado
+            const cpf = rs.question("Digite o cpf do cliente cadastrado: ").trim();
+
+            //Lê todos os clientes cadastrados
+            const clientes = readBancoDeDadosCliente();
+
+            //Verifica se algum cpf bate com a lista cadastrada
+            const clienteEncontrado = clientes.find(c => c.cpfCliente === cpf);
+
+            //Puxa a função
+            verificarClientesCadastrados();
+
+            if (clienteEncontrado) {
+                console.log(`O cliente ${clienteEncontrado.nomeCliente} possui cadastro!`);
+            } else {
+                console.log("Este cliente ainda não foi cadastrado no sistema\n")
+                requestNewInputOfCliente();
+                //continue;
+            }
+        }
+       }
     }
 
     ////////////////////////////////////////////////////////////////////////
