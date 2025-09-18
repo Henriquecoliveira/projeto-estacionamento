@@ -88,8 +88,8 @@
             const sobremesa = rs.question("Digite a sobremesa: ").trim().toUpperCase();
             const acompanhamento = rs.question("Digite o acompanhamento: ").trim(). toUpperCase();
             const endereco = rs.question("Digite o endereço do cliente: ").trim().toUpperCase();
-            const data_hora  = rs.question("Digite a data e hgora do pedido") //inserir função para puxar data e hora do sistema
-            const mes = rs.question("Digite o mês do pedido") //inserir função para puxar o mes do sistema
+            const data_hora  = new Date().toLocaleDateString("pt-br");
+            const mes = new Date().toLocaleDateString("pt-br", { month: "long"});
             const formaDePagamento = rs.question("Digite a forma de pagamento: ").trim().toUpperCase(); 
         
             // Cria um novo objeto Pedido com as entradas do usuário
@@ -144,7 +144,7 @@
     // função para ler os arquivos do banco de dados cliente "caso exista"
     function readBancoDeDadosCliente(): Cliente[] {
         try {
-            const dadosCliente = fs.readFileSync(inputData, "utf-8");
+            const dadosCliente = fs.readFileSync(inputCliente, "utf-8");
 
             // se o arquivo estiver vazio, retorna uma lista vazia
             if (!dadosCliente.trim()) return [];
@@ -183,6 +183,16 @@
 
     // Entrada de Clientes
 
+    //função utilizada na customer_registration ===2
+    function verificarClientesCadastrados(): Cliente | undefined { //função para verificar se o cliente foi cadastrado
+        const cpf = rs.question("Digite o cpf do cliente cadastrado: ").trim();
+
+        //Lê todos os clientes cadastrados
+        const clientes = readBancoDeDadosCliente();
+
+        //Verifica se algum cpf bate com a lista cadastrada
+        return clientes.find(c => c.cpfCliente === cpf);
+    }
     function requestNewInputOfCliente() {
         console.log("\n--- Cadastro de Cliente ---");
         
@@ -209,6 +219,7 @@
             let correctInput = 1;
         }
     }
+
     // Interface de cadastro de cliente
     let customer_registration: number | undefined;
     while (customer_registration !== 9) {
@@ -225,29 +236,20 @@
        }
 
     //customer_registration === 2
-       if (customer_registration === 2) {
-        function verificarClientesCadastrados() { //função para verificar se o cliente foi cadastrado
-            const cpf = rs.question("Digite o cpf do cliente cadastrado: ").trim();
-
-            //Lê todos os clientes cadastrados
-            const clientes = readBancoDeDadosCliente();
-
-            //Verifica se algum cpf bate com a lista cadastrada
-            const clienteEncontrado = clientes.find(c => c.cpfCliente === cpf);
-
+        else if (customer_registration === 2) {
+            
             //Puxa a função
-            verificarClientesCadastrados();
+            const clienteEncontrado = verificarClientesCadastrados();
 
             if (clienteEncontrado) {
-                console.log(`O cliente ${clienteEncontrado.nomeCliente} possui cadastro!`);
+                console.log(`O cliente ${clienteEncontrado.nomeCliente} possui cadastro!\n`);
+                break;
             } else {
-                console.log("Este cliente ainda não foi cadastrado no sistema\n")
+                console.log("O cliente não possui cadastro ainda\n");
                 requestNewInputOfCliente();
-                //continue;
+            }
             }
         }
-       }
-    }
 
     ////////////////////////////////////////////////////////////////////////
 

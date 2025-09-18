@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es2016", // Versão do JavaScript de saída
     "module": "commonjs", // Sistema de módulos para Node.js
-    "outDir": "/dist", // Pasta onde os arquivos JS compilados serão colocados
+    "outDir": "/", // Pasta onde os arquivos JS compilados serão colocados
     "rootDir": "./", // Pasta raiz dos seus arquivos TS
     "esModuleInterop": true, // Para melhor interoperabilidade com módulos CommonJS
     "forceConsistentCasingInFileNames": true,
