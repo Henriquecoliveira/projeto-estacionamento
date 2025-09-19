@@ -1,90 +1,22 @@
 "use strict";
 // Sistemas de pizzaria completo
 // importar as bibliotecas necessárias
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var _a, _b;
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require("fs"); // módulo para manipular arquivos
 var path = require("path"); // módulo para lidar com caminhos de arquivos
 var rs = require("readline-sync"); // módulo para receber entradas do usuário
-// inicia o bloco de código para armazenagem e modificação de dados no arquivo dataLog
-// define o caminho para onde as entradas serão armazenadas
-var inputData = path.resolve(__dirname, "dataLog.csv");
-// cabeçalho do CSV
-var header = "nomeCliente; cpfCliente; pizzas; bebida; sobremesa; acompanhamento; endereco; data_hora; mes; formaDePagamento\n";
-// função para ler os arquivos do dataLog "caso exista"
-function readDataLog() {
-    try {
-        var dados = fs.readFileSync(inputData, "utf-8");
-        // se o arquivo estiver vazio, retorna uma lista vazia
-        if (!dados.trim())
-            return [];
-        // divide o conteúdo por linhas e transforma em objetos Dados
-        return dados.split("\n").map(function (linha) {
-            var _a = linha.split(";"), nomeCliente = _a[0], cpfCliente = _a[1], pizzas = _a[2], bebida = _a[3], sobremesa = _a[4], acompanhamento = _a[5], endereco = _a[6], data_hora = _a[7], mes = _a[8], formaDePagamento = _a[9];
-            return {
-                nomeCliente: nomeCliente === null || nomeCliente === void 0 ? void 0 : nomeCliente.trim(),
-                cpfCliente: cpfCliente === null || cpfCliente === void 0 ? void 0 : cpfCliente.trim(),
-                pizzas: pizzas === null || pizzas === void 0 ? void 0 : pizzas.trim(),
-                bebida: bebida === null || bebida === void 0 ? void 0 : bebida.trim(),
-                sobremesa: sobremesa === null || sobremesa === void 0 ? void 0 : sobremesa.trim(),
-                acompanhamento: acompanhamento === null || acompanhamento === void 0 ? void 0 : acompanhamento.trim(),
-                endereco: endereco === null || endereco === void 0 ? void 0 : endereco.trim(),
-                data_hora: data_hora === null || data_hora === void 0 ? void 0 : data_hora.trim(),
-                mes: mes === null || mes === void 0 ? void 0 : mes.trim(),
-                formaDePagamento: formaDePagamento === null || formaDePagamento === void 0 ? void 0 : formaDePagamento.trim(),
-            };
-        });
-    }
-    catch (_a) {
-        // se o arquivo não existir, também retorna uma lista vazia
-        return [];
-    }
-}
-// inicia o bloco de código para funções e criação de objetos
-// função para salvar uma nova entrada no arquivo
-// para a entrada de novos dados no arquivo dataLog.csv
-function newInput(Pedido) {
-    var linha = "".concat(Pedido.nomeCliente, ";").concat(Pedido.cpfCliente, ";").concat(Pedido.pizzas, ";").concat(Pedido.bebida, ";").concat(Pedido.sobremesa, ";").concat(Pedido.acompanhamento, ";").concat(Pedido.endereco, ";").concat(Pedido.data_hora, ";").concat(Pedido.mes, ";").concat(Pedido.formaDePagamento, "\n");
-    fs.appendFileSync(inputData, linha, "utf-8");
-}
-// Garante que o arquivo CSV tenha o cabeçalho se ele não existir ou estiver vazio
-if (!fs.existsSync(inputData) || fs.readFileSync(inputData, 'utf-8').trim() === '') {
-    fs.writeFileSync(inputData, header, "utf-8");
-}
-// Entrada de pedidos
-function requestNewInputOfPizza() {
-    console.log("\n--- Cadastro de Pedidos ---");
-    var correctInput = 0;
-    while (correctInput === 0) {
-        var nomeCliente = rs.question("Digite o nome do cliente: ").trim().toUpperCase();
-        var cpfCliente = rs.question("Digite o CPF do cliente: ").trim();
-        var pizzas = rs.question("Digite os sabores da pizza: ").trim().toUpperCase();
-        var bebida = rs.question("Digite as bebidas: ").trim().toUpperCase();
-        var sobremesa = rs.question("Digite a sobremesa: ").trim().toUpperCase();
-        var acompanhamento = rs.question("Digite o acompanhamento: ").trim().toUpperCase();
-        var endereco = rs.question("Digite o endereço do cliente: ").trim().toUpperCase();
-        var data_hora = new Date().toLocaleDateString("pt-br");
-        var mes = new Date().toLocaleDateString("pt-br", { month: "long" });
-        var formaDePagamento = rs.question("Digite a forma de pagamento: ").trim().toUpperCase();
-        // Cria um novo objeto Pedido com as entradas do usuário
-        var newRequest = {
-            nomeCliente: nomeCliente,
-            cpfCliente: cpfCliente,
-            pizzas: pizzas,
-            bebida: bebida,
-            sobremesa: sobremesa,
-            acompanhamento: acompanhamento,
-            endereco: endereco,
-            data_hora: data_hora,
-            mes: mes,
-            formaDePagamento: formaDePagamento,
-        };
-        // Chama a função newInput para salvar o novo veículo no CSV
-        newInput(newRequest);
-        console.log("Veículo cadastrado com sucesso!");
-        break;
-        var correctInput_1 = 1;
-    }
-}
 // inicia o bloco de código para armazenagem e modificação de dados no arquivo dataLog
 // define o caminho para onde as entradas serão armazenadas
 var inputCliente = path.resolve(__dirname, "bancoDeDadosCliente.csv");
@@ -157,6 +89,7 @@ function requestNewInputOfCliente() {
 }
 // Interface de cadastro de cliente
 var customer_registration;
+var clienteLogado;
 while (customer_registration !== 9) {
     console.log("\nSistema de cadastro de cliente\n");
     console.log("1 - Cadastrar cliente");
@@ -169,11 +102,12 @@ while (customer_registration !== 9) {
         continue;
     }
     //customer_registration === 2
-    else if (customer_registration === 2) {
+    if (customer_registration === 2) {
         //Puxa a função
         var clienteEncontrado = verificarClientesCadastrados();
         if (clienteEncontrado) {
             console.log("O cliente ".concat(clienteEncontrado.nomeCliente, " possui cadastro!\n"));
+            clienteLogado = clienteEncontrado;
             break;
         }
         else {
@@ -182,23 +116,239 @@ while (customer_registration !== 9) {
         }
     }
 }
+var clienteNome = clienteLogado === null || clienteLogado === void 0 ? void 0 : clienteLogado.nomeCliente;
+var clienteCpf = clienteLogado === null || clienteLogado === void 0 ? void 0 : clienteLogado.cpfCliente;
 ////////////////////////////////////////////////////////////////////////
-// Interface de pedidos
-var userChoice;
-while (userChoice !== 9) {
-    console.log("\nSistema de gerenciamento de pizzaria\n");
-    console.log("1 - Cadastrar pedido");
-    console.log("3 - Relatório");
-    console.log("9 - Desligar programa");
-    userChoice = parseInt(rs.question("O que deseja fazer?")); // = Pede uma entrada ao usuário
-    //userChoice === 1
-    if (userChoice === 1) {
-        requestNewInputOfPizza();
-        continue;
+//Sistema de pedidos da pizzaria
+//Criar o csv do arquivo de pedidos
+var inputData = path.resolve(__dirname, "Pedidos.csv");
+var header = "pizza;data_hora;mes;pagamento;nomeCliente;cpfCliente\n";
+// garante que o arquivo existe e tem o cabeçalho
+if (!fs.existsSync(inputData) || fs.readFileSync(inputData, "utf-8").trim() === "") {
+    fs.writeFileSync(inputData, header, "utf-8");
+}
+//Criar o menu inicial
+console.log("----------- PIZZARIA HENRIQUE --------------");
+console.log("\nO que deseja fazer?");
+console.log("1 -) Realizar um pedido");
+console.log("2 -) Cadastrar");
+console.log("3 -) Sair");
+var escolhaInc = rs.question("\nDigite o numero do que deseja fazer: "); //Criar constante da ação a fazer
+if (escolhaInc === '1') { //Se escolher realizar um pedido ira realizar esse codigo:
+    //Criar o cardapio
+    var cardapio = [
+        {
+            nome: '1 ---- Margherita ----',
+            ingredientes: ['molho de tomate', 'muçarela', 'manjericão'], //Cardapio contendo nome do sabor, os ingredientes e o preço de cada pizza
+            preco: 25.00,
+        },
+        {
+            nome: '2 ---- Calabresa ----',
+            ingredientes: ['molho de tomate', 'muçarela', 'calabresa', 'cebola'],
+            preco: 30.00,
+        },
+        {
+            nome: '3 ---- Quatro Queijos ----',
+            ingredientes: ['muçarela', 'gorgonzola', 'parmesão', 'provolone'],
+            preco: 35.00,
+        },
+        {
+            nome: '4 ---- Portuguesa ----',
+            ingredientes: ['molho de tomate', 'muçarela', 'presunto', 'ovo', 'cebola', 'azeitona'],
+            preco: 35.00,
+        },
+        {
+            nome: '5 ---- Frango com caputiry ----',
+            ingredientes: ['molho de tomate', 'muçarela', 'frango desfiado', 'catupiry'],
+            preco: 45.00,
+        },
+        {
+            nome: '6 ---- Pepperoni ----',
+            ingredientes: ['molho de tomate', 'muçarela', 'pepperoni'],
+            preco: 45.00,
+        },
+        {
+            nome: '7 ---- Vegetariana ----',
+            ingredientes: ['molho de tomate', 'muçarela', 'pimentão', 'cebola', 'tomate', 'azeitona', 'milho'],
+            preco: 45.00,
+        },
+        {
+            nome: '8 ---- Bacon com Cheddar ----',
+            ingredientes: ['molho de tomate', 'muçarela', 'bacon', 'cheddar'],
+            preco: 45.00,
+        }
+    ];
+    //Criar um cardapio para as bebidas disponiveis
+    var bebidas = [
+        { nome: '1 - Coca-Cola 500ml', preco: 5.00, tamanho: '500ml' },
+        { nome: '2 - Guaraná 500ml', preco: 4.50, tamanho: '500ml' },
+        { nome: '3 - Soda 500ml', preco: 4.00, tamanho: '300ml' },
+        { nome: '4 - Pepsi 500ml', preco: 4.00, tamanho: '300ml' },
+        { nome: '5 - Suco Natural 300ml', preco: 6.00, tamanho: '300ml' },
+        { nome: '6 - Agua 300ml', preco: 2.00, tamanho: '300ml' },
+    ];
+    var sobremesas = [
+        { nome: '1 - Pizza Doce de Chocolate - Pequena', preco: 35.00, },
+        { nome: '2 - Pizza Doce de Banana Nevada - Pequena', preco: 34.50, },
+        { nome: '3 - Torta Holandesa - Pequena', preco: 14.00, },
+    ];
+    //Criar a variavel que vai receber o pedido
+    var pedidoPizzas = [];
+    var pedidoBebidas = [];
+    var pedidoSobremesa = [];
+    //Deixar true para rodar o loop até que o usuario finalize o pedido e caso tenha alguma informação errada ele retornar do principio
+    var continuar = true;
+    //Loop
+    while (continuar) {
+        //Mostrar cardápio de pizzas
+        console.log("\n--- Pizzas Disponíveis ---");
+        cardapio.forEach(function (pizza) {
+            console.log("".concat(pizza.nome, " - R$ ").concat(pizza.preco.toFixed(2), " \n - Ingredientes: ").concat(pizza.ingredientes.join(', '), "\n"));
+        });
+        //Escolha da pizza
+        var escolhaStr = rs.question("\nDigite o numero da pizza que deseja: ");
+        var escolhaNum = Number(escolhaStr); //Transofrmar o que foi digitado em numero
+        if (isNaN(escolhaNum) || escolhaNum < 1 || escolhaNum > cardapio.length) { //Verificar se é um numero para continuar o looping
+            console.log("\nEscolha inválida! Tente novamente.");
+            continue;
+        }
+        var tamanhoEscolhido = rs.question("\nEscolha o tamanho (pequena, media, grande): ").toLowerCase(); //Definir o tamanho que vai ser pedido
+        if (!['pequena', 'media', 'grande'].includes(tamanhoEscolhido)) {
+            console.log("\nTamanho inválido! Tente novamente."); //Verifica se está correto para seguir com o codigo
+            continue;
+        }
+        var pizzaBase = cardapio[escolhaNum - 1]; //Enumerar as escolhas de pizzas do cliente
+        //Cria pizza com tamanho selecionado, preço fixo (sem ajuste)
+        var pizzaEscolhida = __assign(__assign({}, pizzaBase), { tamanho: tamanhoEscolhido });
+        pedidoPizzas.push(pizzaEscolhida);
+        console.log("Pizza \"".concat(pizzaEscolhida.nome, "\" - ").concat(pizzaEscolhida.tamanho, " adicionada ao pedido."));
+        //Perguntar se quer continuar adicionando pizzas
+        var querContinuar = rs.question("\nQuer adicionar outra pizza? (s/n) ");
+        if (querContinuar.toLowerCase() !== 's') {
+            continuar = false;
+        }
+    }
+    var querBebida = rs.question("\nDeseja adicionar bebidas ao seu pedido? (s/n): ").toLowerCase(); //Perguntar se quer bebida
+    if (querBebida === 's') {
+        var continuarBebidas = true; //Caso seja sim a respota ele continua
+        while (continuarBebidas) {
+            console.log("\n--- Bebidas Disponíveis ---");
+            bebidas.forEach(function (bebida) {
+                console.log("".concat(bebida.nome, " - R$ ").concat(bebida.preco.toFixed(2)));
+            });
+            var escolhaBebidaStr = rs.question("Digite o numero da bebida que deseja: ");
+            var escolhaBebidaNum = Number(escolhaBebidaStr); //Transformar em numero
+            if (isNaN(escolhaBebidaNum) || escolhaBebidaNum < 1 || escolhaBebidaNum > bebidas.length) { //Verificar se é um numero
+                console.log("Escolha inválida de bebida! Tente novamente.");
+            }
+            else {
+                var bebidaEscolhida = bebidas[escolhaBebidaNum - 1];
+                pedidoBebidas.push(bebidaEscolhida);
+                console.log("Bebida \"".concat(bebidaEscolhida.nome, "\" adicionada ao pedido."));
+            }
+            var maisBebidas = rs.question("Deseja adicionar outra bebida? (s/n): ");
+            if (maisBebidas.toLowerCase() !== 's') {
+                continuarBebidas = false;
+            }
+        }
+    }
+    //Sobremesa
+    var querSobremesa = rs.question("\nDeseja adicionar alguma sobremesa ao seu pedido? (s/n): ").toLowerCase(); //Perguntar se quer adicionar uma sobremesa ao pedido
+    if (querSobremesa === 's') {
+        var continuarSobremesa = true; //Caso seja sim a respota ele continua
+        while (continuarSobremesa) {
+            console.log("\n--- Sobremesas Disponíveis ---");
+            sobremesas.forEach(function (sobremesas) {
+                console.log("".concat(sobremesas.nome, " - R$ ").concat(sobremesas.preco.toFixed(2)));
+            });
+            var escolhaSobremesaStr = rs.question("Digite o numero da sobremesa que deseja: ");
+            var escolhaSobremesaNum = Number(escolhaSobremesaStr); //Transformar em numero
+            if (isNaN(escolhaSobremesaNum) || escolhaSobremesaNum < 1 || escolhaSobremesaNum > sobremesas.length) { //Verificar se é um numero
+                console.log("Escolha inválida de sobremesa! Tente novamente.");
+            }
+            else {
+                var SobremesaEscolhida = bebidas[escolhaSobremesaNum - 1];
+                pedidoSobremesa.push(SobremesaEscolhida);
+                console.log("Sobremesa \"".concat(SobremesaEscolhida.nome, "\" adicionada ao pedido."));
+            }
+            var maisSobremesa = rs.question("Deseja adicionar outra sobremesa? (s/n): ");
+            if (maisSobremesa.toLowerCase() !== 's') {
+                continuarSobremesa = false;
+            }
+        }
+    }
+    //Fim do pedido
+    console.log("\nSeu pedido final:");
+    var total_1 = 0;
+    if (pedidoPizzas.length > 0) { //Mostrar as pizzas escolhidas
+        console.log("\nPizzas:");
+        pedidoPizzas.forEach(function (pizza, i) {
+            console.log("".concat(i + 1, " -) ").concat(pizza.nome, " - ").concat(pizza.tamanho, " - R$ ").concat(pizza.preco.toFixed(2)));
+            total_1 += pizza.preco;
+        });
+    }
+    if (pedidoBebidas.length > 0) { //Mostrar as bebidas escolhidas
+        console.log("\nBebidas:");
+        pedidoBebidas.forEach(function (bebida, i) {
+            console.log("".concat(i + 1, " -) ").concat(bebida.nome, " - R$ ").concat(bebida.preco.toFixed(2)));
+            total_1 += bebida.preco;
+        });
+    }
+    if (pedidoSobremesa.length > 0) { //Mostrar as sobremesas escolhidas
+        console.log("\nSobremesa:");
+        pedidoSobremesa.forEach(function (sobremesa, i) {
+            console.log("".concat(i + 1, " -) ").concat(sobremesa.nome, " - R$ ").concat(sobremesa.preco.toFixed(2)));
+            total_1 += sobremesa.preco;
+        });
+    }
+    console.log("\nTotal a pagar: R$ ".concat(total_1.toFixed(2))); //Mostrar quanto devera ser pago
+    //Forma de pagamento
+    console.log("\nFormas de pagamento disponíveis:");
+    var formasPagamento = [
+        { nome: "Dinheiro" },
+        { nome: "Cartão de Débito" },
+        { nome: "Cartão de Crédito" },
+        { nome: "Pix" }
+    ];
+    formasPagamento.forEach(function (fp, i) {
+        console.log("".concat(i + 1, " - ").concat(fp.nome));
+    });
+    var escolhaPagamentoStr = rs.question("\nDigite o numero da forma de pagamento: ");
+    var escolhaPagamentoNum = Number(escolhaPagamentoStr);
+    var formaPagamentoEscolhida = void 0;
+    if (isNaN(escolhaPagamentoNum) ||
+        escolhaPagamentoNum < 1 ||
+        escolhaPagamentoNum > formasPagamento.length) {
+        console.log("Forma de pagamento inválida! Será registrado como 'Não informado'.");
+        formaPagamentoEscolhida = { nome: "Não informado" };
+    }
+    else {
+        formaPagamentoEscolhida = formasPagamento[escolhaPagamentoNum - 1];
+    }
+    console.log("\nForma de pagamento escolhida: ".concat(formaPagamentoEscolhida.nome));
+    //Salvar no csv
+    if (pedidoPizzas.length > 0) { //caso o pedido tenha sido feito ele salva
+        var pizzasStr = pedidoPizzas.map(function (p) { return "".concat(p.nome, " (").concat(p.tamanho, ")"); }).join(", ");
+        var agora = new Date();
+        var data_hora = agora.toLocaleString("pt-BR");
+        var mes = String(agora.getMonth() + 1);
+        var linha = "".concat(pizzasStr, ";").concat(data_hora, ";").concat(mes, ";").concat(formaPagamentoEscolhida.nome, ";").concat((_a = clienteLogado === null || clienteLogado === void 0 ? void 0 : clienteLogado.nomeCliente) !== null && _a !== void 0 ? _a : "N/A", ";").concat((_b = clienteLogado === null || clienteLogado === void 0 ? void 0 : clienteLogado.cpfCliente) !== null && _b !== void 0 ? _b : "N/A", "\n");
+        fs.appendFileSync(inputData, linha, "utf-8");
+    }
+    if (pedidoBebidas.length > 0) { //salvar as bebidas da mesma maneira
+        var bebidasStr = pedidoBebidas.map(function (b) { return "".concat(b.nome, " (").concat(b.tamanho, ")"); }).join(", ");
+        var agora = new Date(); //criar para salvar a data
+        var data_hora = agora.toLocaleString("pt-BR");
+        var mes = String(agora.getMonth() + 1);
+        var linha = "Bebidas do dia ".concat(data_hora, "; mes: ").concat(mes, ": ").concat(bebidasStr, " pagamento: ").concat(formaPagamentoEscolhida.nome, "\n"); //forma padrao para salvar (nome da bebida)(data e hora do pedido)(mes)(forma de pagamento)
+        fs.appendFileSync(inputData, linha, "utf-8");
+        if (pedidoSobremesa.length > 0) { //salvar as sobremesas da mesma maneira
+            var sobremesaStr = pedidoSobremesa.map(function (s) { return "".concat(s.nome); }).join(", ");
+            var agora_1 = new Date(); //criar para salvar a data
+            var data_hora_1 = agora_1.toLocaleString("pt-BR");
+            var mes_1 = String(agora_1.getMonth() + 1);
+            var linha_1 = "Sobremesas do dia ".concat(data_hora_1, "; mes: ").concat(mes_1, ": ").concat(sobremesaStr, " pagamento: ").concat(formaPagamentoEscolhida.nome, "\n"); //forma padrao para salvar (nome da sobremesa)(data e hora do pedido)(mes)(forma de pagamento)
+            fs.appendFileSync(inputData, linha_1, "utf-8");
+        }
     }
 }
-/*
-// Você pode opcionalmente ler e imprimir os dados para verificar
-console.log("\n--- Dados atuais no CSV ---");
-console.log(readDataLog());
-*/ 

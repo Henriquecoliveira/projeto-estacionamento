@@ -5,123 +5,6 @@
     import * as path from "path"; // módulo para lidar com caminhos de arquivos
     import * as rs from "readline-sync"; // módulo para receber entradas do usuário
 
-    // definindo o type de pedido
-
-    type Pedido = {
-        nomeCliente: string;
-        cpfCliente: string;
-        pizzas: string;
-        bebida: string;
-        sobremesa: string;
-        acompanhamento: string;
-        endereco: string;
-        data_hora: string;
-        mes: string;
-        formaDePagamento: string;
-    }
-    // inicia o bloco de código para armazenagem e modificação de dados no arquivo dataLog
-    // define o caminho para onde as entradas serão armazenadas
-
-    const inputData = path.resolve(__dirname, "dataLog.csv");
-
-    // cabeçalho do CSV
-    const header = "nomeCliente; cpfCliente; pizzas; bebida; sobremesa; acompanhamento; endereco; data_hora; mes; formaDePagamento\n";
-
-    // função para ler os arquivos do dataLog "caso exista"
-    function readDataLog(): Pedido[] {
-        try {
-            const dados = fs.readFileSync(inputData, "utf-8");
-
-            // se o arquivo estiver vazio, retorna uma lista vazia
-            if (!dados.trim()) return [];
-
-            // divide o conteúdo por linhas e transforma em objetos Dados
-            return dados.split("\n").map((linha) => {
-                const [
-                    nomeCliente, cpfCliente, pizzas, bebida, sobremesa, acompanhamento, endereco, data_hora, mes, formaDePagamento
-                ] = linha.split(";");
-
-                return {
-                    nomeCliente: nomeCliente?.trim(),
-                    cpfCliente: cpfCliente?.trim(),
-                    pizzas: pizzas?.trim(),
-                    bebida: bebida?.trim(),
-                    sobremesa: sobremesa?.trim(),
-                    acompanhamento: acompanhamento?.trim(),
-                    endereco: endereco?.trim(),
-                    data_hora: data_hora?.trim(),
-                    mes: mes?.trim(),
-                    formaDePagamento: formaDePagamento?.trim(),
-                };
-            });
-        } catch {
-            // se o arquivo não existir, também retorna uma lista vazia
-            return [];
-        }
-    }
-
-    // inicia o bloco de código para funções e criação de objetos
-
-    // função para salvar uma nova entrada no arquivo
-    // para a entrada de novos dados no arquivo dataLog.csv
-    function newInput(Pedido: Pedido) {
-        const linha = `${Pedido.nomeCliente};${Pedido.cpfCliente};${Pedido.pizzas};${Pedido.bebida};${Pedido.sobremesa};${Pedido.acompanhamento};${Pedido.endereco};${Pedido.data_hora};${Pedido.mes};${Pedido.formaDePagamento}\n`;
-        fs.appendFileSync(inputData, linha, "utf-8");
-    }
-
-    // Garante que o arquivo CSV tenha o cabeçalho se ele não existir ou estiver vazio
-    if (!fs.existsSync(inputData) || fs.readFileSync(inputData, 'utf-8').trim() === '') {
-        fs.writeFileSync(inputData, header, "utf-8");
-    }
-
-    // Entrada de pedidos
-
-    function requestNewInputOfPizza() {
-        console.log("\n--- Cadastro de Pedidos ---");
-        
-        let correctInput: number = 0;
-        while (correctInput === 0) { 
-            const nomeCliente = rs.question("Digite o nome do cliente: ").trim().toUpperCase();
-            const cpfCliente = rs.question("Digite o CPF do cliente: ").trim();
-            const pizzas = rs.question("Digite os sabores da pizza: ").trim().toUpperCase();
-            const bebida = rs.question("Digite as bebidas: ").trim().toUpperCase();
-            const sobremesa = rs.question("Digite a sobremesa: ").trim().toUpperCase();
-            const acompanhamento = rs.question("Digite o acompanhamento: ").trim(). toUpperCase();
-            const endereco = rs.question("Digite o endereço do cliente: ").trim().toUpperCase();
-            const data_hora  = new Date().toLocaleDateString("pt-br");
-            const mes = new Date().toLocaleDateString("pt-br", { month: "long"});
-            const formaDePagamento = rs.question("Digite a forma de pagamento: ").trim().toUpperCase(); 
-        
-            // Cria um novo objeto Pedido com as entradas do usuário
-            const newRequest: Pedido = { // está dando erro por faltar as contantes data_hora e mes
-                nomeCliente,
-                cpfCliente,
-                pizzas,
-                bebida,
-                sobremesa,
-                acompanhamento,
-                endereco,
-                data_hora,
-                mes,
-                formaDePagamento,
-            };
-
-            // Chama a função newInput para salvar o novo veículo no CSV
-            newInput(newRequest);
-            console.log("Veículo cadastrado com sucesso!");
-
-            break;
-            let correctInput = 1;
-        }
-    }
-    // Encerrando o bloco de código para armazenagem e modificação de dados no arquivo dataLog
-    // Encerrando o bloco de código para funções e criação de objetos
-
-
-    // Exemplo de como chamar a função para solicitar entrada
-    // requestNewInputOfPizza();
-
-
     //////////////////////////////////////////////////////////////////////////
     
     // Cadastro do cliente
@@ -222,6 +105,8 @@
 
     // Interface de cadastro de cliente
     let customer_registration: number | undefined;
+    let clienteLogado: Cliente | undefined;
+
     while (customer_registration !== 9) {
         console.log("\nSistema de cadastro de cliente\n");
         console.log("1 - Cadastrar cliente");
@@ -236,13 +121,13 @@
        }
 
     //customer_registration === 2
-        else if (customer_registration === 2) {
-            
-            //Puxa a função
-            const clienteEncontrado = verificarClientesCadastrados();
+            if (customer_registration === 2) {
 
+            //Puxa a função
+                const clienteEncontrado = verificarClientesCadastrados();
             if (clienteEncontrado) {
                 console.log(`O cliente ${clienteEncontrado.nomeCliente} possui cadastro!\n`);
+                clienteLogado = clienteEncontrado;
                 break;
             } else {
                 console.log("O cliente não possui cadastro ainda\n");
@@ -250,27 +135,327 @@
             }
             }
         }
+        const clienteNome = clienteLogado?.nomeCliente;
+        const clienteCpf = clienteLogado?.cpfCliente;
 
-    ////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 
-    // Interface de pedidos
-    let userChoice: number | undefined;
-    while (userChoice !== 9) {
-        console.log("\nSistema de gerenciamento de pizzaria\n");
-        console.log("1 - Cadastrar pedido");
-        console.log("3 - Relatório");
-        console.log("9 - Desligar programa");
-        userChoice = parseInt(rs.question("O que deseja fazer?")); // = Pede uma entrada ao usuário
+//Sistema de pedidos da pizzaria
 
-        //userChoice === 1
-        if (userChoice === 1) {
-            requestNewInputOfPizza();
-            continue;
-        }
+//Criar o csv do arquivo de pedidos
+const inputData = path.resolve(__dirname, "Pedidos.csv");
+const header = "pizza;data_hora;mes;pagamento;nomeCliente;cpfCliente\n";
+
+// garante que o arquivo existe e tem o cabeçalho
+if (!fs.existsSync(inputData) || fs.readFileSync(inputData, "utf-8").trim() === "") {
+  fs.writeFileSync(inputData, header, "utf-8");
+}
+
+
+//Criar uma interface das pizzas para definir os valores as entidades
+type Pizza = {
+  nome: string;
+  ingredientes: string[];
+  preco: number;
+  tamanho?: 'pequena' | 'media' | 'grande';
+}
+
+//Criar a mesma interface agora para as bebidas
+type Bebida = {
+  nome: string;
+  preco: number;
+  tamanho?: string;
+}
+
+//Criar a mesma interface para as sobremesas]
+type Sobremesa = {
+  nome: string;
+  preco: number;
+}
+
+//Criar para a forma de pagamento
+type FormadePagamento = {
+    nome: string;
+}
+
+//Criar o menu inicial
+    console.log("----------- PIZZARIA HENRIQUE --------------");
+    console.log("\nO que deseja fazer?")
+    console.log("1 -) Realizar um pedido")
+    console.log("2 -) Cadastrar")
+    console.log("3 -) Sair")
+
+    const  escolhaInc = rs.question("\nDigite o numero do que deseja fazer: "); //Criar constante da ação a fazer
+
+    if (escolhaInc === '1') {    //Se escolher realizar um pedido ira realizar esse codigo:
+
+//Criar o cardapio
+const cardapio: Pizza[] = [
+  {
+    nome: '1 ---- Margherita ----',
+    ingredientes: ['molho de tomate', 'muçarela', 'manjericão'], //Cardapio contendo nome do sabor, os ingredientes e o preço de cada pizza
+    preco: 25.00,
+  },
+  {
+    nome: '2 ---- Calabresa ----',
+    ingredientes: ['molho de tomate', 'muçarela', 'calabresa', 'cebola'],
+    preco: 30.00,
+  },
+  {
+    nome: '3 ---- Quatro Queijos ----',
+    ingredientes: ['muçarela', 'gorgonzola', 'parmesão', 'provolone'],
+    preco: 35.00,
+  },
+
+   {
+    nome: '4 ---- Portuguesa ----',
+    ingredientes: ['molho de tomate', 'muçarela', 'presunto', 'ovo', 'cebola', 'azeitona'],
+    preco: 35.00,
+  },
+
+     {
+    nome: '5 ---- Frango com caputiry ----',
+    ingredientes: ['molho de tomate','muçarela', 'frango desfiado', 'catupiry'],
+    preco: 45.00,
+  },
+    {
+    nome: '6 ---- Pepperoni ----',
+    ingredientes: ['molho de tomate', 'muçarela', 'pepperoni'],
+    preco: 45.00,
+  },
+    {
+    nome: '7 ---- Vegetariana ----',
+    ingredientes: ['molho de tomate', 'muçarela', 'pimentão', 'cebola', 'tomate', 'azeitona', 'milho'],
+    preco: 45.00,
+  },
+
+    {
+    nome: '8 ---- Bacon com Cheddar ----',
+    ingredientes: ['molho de tomate', 'muçarela', 'bacon', 'cheddar'],
+    preco: 45.00,
+  }
+];
+
+
+//Criar um cardapio para as bebidas disponiveis
+const bebidas: Bebida[] = [
+  { nome: '1 - Coca-Cola 500ml', preco: 5.00, tamanho: '500ml' },
+  { nome: '2 - Guaraná 500ml', preco: 4.50, tamanho: '500ml' },
+  { nome: '3 - Soda 500ml', preco: 4.00, tamanho: '300ml' },
+  { nome: '4 - Pepsi 500ml', preco: 4.00, tamanho: '300ml' },
+  { nome: '5 - Suco Natural 300ml', preco: 6.00, tamanho: '300ml' },
+  { nome: '6 - Agua 300ml', preco: 2.00, tamanho: '300ml' },
+];
+
+const sobremesas: Sobremesa[] = [
+  { nome: '1 - Pizza Doce de Chocolate - Pequena', preco: 35.00,},
+  { nome: '2 - Pizza Doce de Banana Nevada - Pequena', preco: 34.50,},
+  { nome: '3 - Torta Holandesa - Pequena', preco: 14.00,},
+];
+
+//Criar a variavel que vai receber o pedido
+const pedidoPizzas: Pizza[] = [];
+const pedidoBebidas: Bebida[] = [];
+const pedidoSobremesa: Sobremesa[] = [];
+
+//Deixar true para rodar o loop até que o usuario finalize o pedido e caso tenha alguma informação errada ele retornar do principio
+let continuar = true;
+
+
+//Loop
+while (continuar) {
+  //Mostrar cardápio de pizzas
+  console.log("\n--- Pizzas Disponíveis ---");
+  cardapio.forEach(pizza => {
+    console.log(`${pizza.nome} - R$ ${pizza.preco.toFixed(2)} \n - Ingredientes: ${pizza.ingredientes.join(', ')}\n`);
+  });
+
+  //Escolha da pizza
+  const escolhaStr = rs.question("\nDigite o numero da pizza que deseja: ");
+  const escolhaNum = Number(escolhaStr); //Transofrmar o que foi digitado em numero
+
+  if (isNaN(escolhaNum) || escolhaNum < 1 || escolhaNum > cardapio.length) { //Verificar se é um numero para continuar o looping
+    console.log("\nEscolha inválida! Tente novamente.");
+    continue;
+  }
+
+  const tamanhoEscolhido = rs.question("\nEscolha o tamanho (pequena, media, grande): ").toLowerCase(); //Definir o tamanho que vai ser pedido
+
+  if (!['pequena', 'media', 'grande'].includes(tamanhoEscolhido)) {
+    console.log("\nTamanho inválido! Tente novamente."); //Verifica se está correto para seguir com o codigo
+    continue;
+  }
+
+  const pizzaBase = cardapio[escolhaNum - 1]; //Enumerar as escolhas de pizzas do cliente
+
+  //Cria pizza com tamanho selecionado, preço fixo (sem ajuste)
+  const pizzaEscolhida: Pizza = {
+    ...pizzaBase,
+    tamanho: tamanhoEscolhido as 'pequena' | 'media' | 'grande',
+  };
+
+  pedidoPizzas.push(pizzaEscolhida);
+  console.log(`Pizza "${pizzaEscolhida.nome}" - ${pizzaEscolhida.tamanho} adicionada ao pedido.`);
+
+
+  //Perguntar se quer continuar adicionando pizzas
+  const querContinuar = rs.question("\nQuer adicionar outra pizza? (s/n) ");
+  if (querContinuar.toLowerCase() !== 's') {
+    continuar = false;
+  }
+
+}
+
+const querBebida = rs.question("\nDeseja adicionar bebidas ao seu pedido? (s/n): ").toLowerCase(); //Perguntar se quer bebida
+
+if (querBebida === 's') {
+  let continuarBebidas = true; //Caso seja sim a respota ele continua
+
+  while (continuarBebidas) {
+    console.log("\n--- Bebidas Disponíveis ---");
+    bebidas.forEach(bebida => {
+      console.log(`${bebida.nome} - R$ ${bebida.preco.toFixed(2)}`);
+    });
+
+    const escolhaBebidaStr = rs.question("Digite o numero da bebida que deseja: ");
+    const escolhaBebidaNum = Number(escolhaBebidaStr); //Transformar em numero
+
+    if (isNaN(escolhaBebidaNum) || escolhaBebidaNum < 1 || escolhaBebidaNum > bebidas.length) { //Verificar se é um numero
+      console.log("Escolha inválida de bebida! Tente novamente.");
+    } else {
+      const bebidaEscolhida = bebidas[escolhaBebidaNum - 1];
+      pedidoBebidas.push(bebidaEscolhida);
+      console.log(`Bebida "${bebidaEscolhida.nome}" adicionada ao pedido.`);
     }
 
-    /*
-    // Você pode opcionalmente ler e imprimir os dados para verificar
-    console.log("\n--- Dados atuais no CSV ---");
-    console.log(readDataLog());
-    */
+    const maisBebidas = rs.question("Deseja adicionar outra bebida? (s/n): ");
+    if (maisBebidas.toLowerCase() !== 's') {
+      continuarBebidas = false;
+    }
+  }
+}
+
+//Sobremesa
+const querSobremesa = rs.question("\nDeseja adicionar alguma sobremesa ao seu pedido? (s/n): ").toLowerCase(); //Perguntar se quer adicionar uma sobremesa ao pedido
+
+if (querSobremesa === 's') {
+  let continuarSobremesa = true; //Caso seja sim a respota ele continua
+
+  while (continuarSobremesa) {
+    console.log("\n--- Sobremesas Disponíveis ---");
+    sobremesas.forEach(sobremesas => {
+      console.log(`${sobremesas.nome} - R$ ${sobremesas.preco.toFixed(2)}`);
+    });
+
+    const escolhaSobremesaStr = rs.question("Digite o numero da sobremesa que deseja: ");
+    const escolhaSobremesaNum = Number(escolhaSobremesaStr); //Transformar em numero
+
+    if (isNaN(escolhaSobremesaNum) || escolhaSobremesaNum < 1 || escolhaSobremesaNum > sobremesas.length) { //Verificar se é um numero
+      console.log("Escolha inválida de sobremesa! Tente novamente.");
+    } else {
+      const SobremesaEscolhida = bebidas[escolhaSobremesaNum - 1];
+      pedidoSobremesa.push(SobremesaEscolhida);
+      console.log(`Sobremesa "${SobremesaEscolhida.nome}" adicionada ao pedido.`);
+    }
+
+    const maisSobremesa = rs.question("Deseja adicionar outra sobremesa? (s/n): ");
+    if (maisSobremesa.toLowerCase() !== 's') {
+      continuarSobremesa = false;
+    }
+  }
+}
+
+//Fim do pedido
+console.log("\nSeu pedido final:");
+
+let total = 0;
+
+if (pedidoPizzas.length > 0) { //Mostrar as pizzas escolhidas
+  console.log("\nPizzas:");
+  pedidoPizzas.forEach((pizza, i) => {
+    console.log(`${i + 1} -) ${pizza.nome} - ${pizza.tamanho} - R$ ${pizza.preco.toFixed(2)}`);
+    total += pizza.preco;
+  });
+}
+
+if (pedidoBebidas.length > 0) { //Mostrar as bebidas escolhidas
+  console.log("\nBebidas:");
+  pedidoBebidas.forEach((bebida, i) => {
+    console.log(`${i + 1} -) ${bebida.nome} - R$ ${bebida.preco.toFixed(2)}`);
+    total += bebida.preco;
+  });
+}
+    
+if (pedidoSobremesa.length > 0) { //Mostrar as sobremesas escolhidas
+  console.log("\nSobremesa:");
+  pedidoSobremesa.forEach((sobremesa, i) => {
+    console.log(`${i + 1} -) ${sobremesa.nome} - R$ ${sobremesa.preco.toFixed(2)}`);
+    total += sobremesa.preco;
+  });
+}
+
+  console.log(`\nTotal a pagar: R$ ${total.toFixed(2)}`); //Mostrar quanto devera ser pago
+
+//Forma de pagamento
+console.log("\nFormas de pagamento disponíveis:");
+const formasPagamento: FormadePagamento[] = [
+  { nome: "Dinheiro" },
+  { nome: "Cartão de Débito" },
+  { nome: "Cartão de Crédito" },
+  { nome: "Pix" }
+];
+
+formasPagamento.forEach((fp, i) => {
+  console.log(`${i + 1} - ${fp.nome}`);
+});
+
+const escolhaPagamentoStr = rs.question("\nDigite o numero da forma de pagamento: ");
+const escolhaPagamentoNum = Number(escolhaPagamentoStr);
+
+let formaPagamentoEscolhida: FormadePagamento;
+
+if (
+  isNaN(escolhaPagamentoNum) ||
+  escolhaPagamentoNum < 1 ||
+  escolhaPagamentoNum > formasPagamento.length
+) {
+  console.log("Forma de pagamento inválida! Será registrado como 'Não informado'.");
+  formaPagamentoEscolhida = { nome: "Não informado" };
+} else {
+  formaPagamentoEscolhida = formasPagamento[escolhaPagamentoNum - 1];
+}
+
+console.log(`\nForma de pagamento escolhida: ${formaPagamentoEscolhida.nome}`);
+
+    //Salvar no csv
+    if (pedidoPizzas.length > 0) { //caso o pedido tenha sido feito ele salva
+const pizzasStr = pedidoPizzas.map(p => `${p.nome} (${p.tamanho})`).join(", ");
+const agora = new Date();
+const data_hora = agora.toLocaleString("pt-BR");
+const mes = String(agora.getMonth() + 1);
+
+const linha = `${pizzasStr};${data_hora};${mes};${formaPagamentoEscolhida.nome};${clienteLogado?.nomeCliente ?? "N/A"};${clienteLogado?.cpfCliente ?? "N/A"}\n`;
+fs.appendFileSync(inputData, linha, "utf-8");
+
+ }
+    if (pedidoBebidas.length > 0) { //salvar as bebidas da mesma maneira
+  const bebidasStr = pedidoBebidas.map(b => `${b.nome} (${b.tamanho})`).join(", ");
+  const agora = new Date(); //criar para salvar a data
+  const data_hora = agora.toLocaleString("pt-BR");
+  const mes = String(agora.getMonth() + 1);
+
+  const linha = `Bebidas do dia ${data_hora}; mes: ${mes}: ${bebidasStr} pagamento: ${formaPagamentoEscolhida.nome}\n`;//forma padrao para salvar (nome da bebida)(data e hora do pedido)(mes)(forma de pagamento)
+  fs.appendFileSync(inputData, linha, "utf-8");
+
+    if (pedidoSobremesa.length > 0) { //salvar as sobremesas da mesma maneira
+  const sobremesaStr = pedidoSobremesa.map(s => `${s.nome}`).join(", ");
+  const agora = new Date(); //criar para salvar a data
+  const data_hora = agora.toLocaleString("pt-BR");
+  const mes = String(agora.getMonth() + 1);
+
+  const linha = `Sobremesas do dia ${data_hora}; mes: ${mes}: ${sobremesaStr} pagamento: ${formaPagamentoEscolhida.nome}\n`;//forma padrao para salvar (nome da sobremesa)(data e hora do pedido)(mes)(forma de pagamento)
+  fs.appendFileSync(inputData, linha, "utf-8");
+    }
+}
+
+}
