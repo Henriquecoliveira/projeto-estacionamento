@@ -122,16 +122,15 @@ var clienteCpf = clienteLogado === null || clienteLogado === void 0 ? void 0 : c
 //Sistema de pedidos da pizzaria
 //Criar o csv do arquivo de pedidos
 var inputData = path.resolve(__dirname, "Pedidos.csv");
-var header = "pizza;data_hora;mes;pagamento;nomeCliente;cpfCliente\n";
 // garante que o arquivo existe e tem o cabeçalho
 if (!fs.existsSync(inputData) || fs.readFileSync(inputData, "utf-8").trim() === "") {
-    fs.writeFileSync(inputData, header, "utf-8");
+    fs.writeFileSync(inputData, "utf-8");
 }
 //Criar o menu inicial
 console.log("----------- PIZZARIA HENRIQUE --------------");
 console.log("\nO que deseja fazer?");
 console.log("1 -) Realizar um pedido");
-console.log("2 -) Cadastrar");
+console.log("2 -) Recibo");
 console.log("3 -) Sair");
 var escolhaInc = rs.question("\nDigite o numero do que deseja fazer: "); //Criar constante da ação a fazer
 if (escolhaInc === '1') { //Se escolher realizar um pedido ira realizar esse codigo:
@@ -331,24 +330,66 @@ if (escolhaInc === '1') { //Se escolher realizar um pedido ira realizar esse cod
         var pizzasStr = pedidoPizzas.map(function (p) { return "".concat(p.nome, " (").concat(p.tamanho, ")"); }).join(", ");
         var agora = new Date();
         var data_hora = agora.toLocaleString("pt-BR");
-        var mes = String(agora.getMonth() + 1);
-        var linha = "".concat(pizzasStr, ";").concat(data_hora, ";").concat(mes, ";").concat(formaPagamentoEscolhida.nome, ";").concat((_a = clienteLogado === null || clienteLogado === void 0 ? void 0 : clienteLogado.nomeCliente) !== null && _a !== void 0 ? _a : "N/A", ";").concat((_b = clienteLogado === null || clienteLogado === void 0 ? void 0 : clienteLogado.cpfCliente) !== null && _b !== void 0 ? _b : "N/A", "\n");
-        fs.appendFileSync(inputData, linha, "utf-8");
+        var precoTotal = total_1;
+        var linha = "Cliente ".concat((_a = clienteLogado === null || clienteLogado === void 0 ? void 0 : clienteLogado.nomeCliente) !== null && _a !== void 0 ? _a : "N/A", " do CPF: ;").concat((_b = clienteLogado === null || clienteLogado === void 0 ? void 0 : clienteLogado.cpfCliente) !== null && _b !== void 0 ? _b : "N/A", "\nPediu ").concat(pizzasStr, " \u00E0s ").concat(data_hora, " e pagou R$").concat(precoTotal, " no ").concat(formaPagamentoEscolhida.nome, "\n");
+        fs.appendFileSync(inputData, linha);
     }
     if (pedidoBebidas.length > 0) { //salvar as bebidas da mesma maneira
         var bebidasStr = pedidoBebidas.map(function (b) { return "".concat(b.nome, " (").concat(b.tamanho, ")"); }).join(", ");
-        var agora = new Date(); //criar para salvar a data
-        var data_hora = agora.toLocaleString("pt-BR");
-        var mes = String(agora.getMonth() + 1);
-        var linha = "Bebidas do dia ".concat(data_hora, "; mes: ").concat(mes, ": ").concat(bebidasStr, " pagamento: ").concat(formaPagamentoEscolhida.nome, "\n"); //forma padrao para salvar (nome da bebida)(data e hora do pedido)(mes)(forma de pagamento)
+        var linha = "Bebida(s) inclusa(s): ".concat(bebidasStr, "\n");
         fs.appendFileSync(inputData, linha, "utf-8");
         if (pedidoSobremesa.length > 0) { //salvar as sobremesas da mesma maneira
             var sobremesaStr = pedidoSobremesa.map(function (s) { return "".concat(s.nome); }).join(", ");
-            var agora_1 = new Date(); //criar para salvar a data
-            var data_hora_1 = agora_1.toLocaleString("pt-BR");
-            var mes_1 = String(agora_1.getMonth() + 1);
-            var linha_1 = "Sobremesas do dia ".concat(data_hora_1, "; mes: ").concat(mes_1, ": ").concat(sobremesaStr, " pagamento: ").concat(formaPagamentoEscolhida.nome, "\n"); //forma padrao para salvar (nome da sobremesa)(data e hora do pedido)(mes)(forma de pagamento)
+            var linha_1 = "Sobremesa(s) inclusa(s) ".concat(sobremesaStr, "\n");
             fs.appendFileSync(inputData, linha_1, "utf-8");
         }
     }
+}
+////////////////////////////////////////////////////////////////////////////
+// Caminho do CSV
+var pedidosPath = path.join(__dirname, "Pedidos.csv");
+function gerarRecibo(pedidos) {
+    if (pedidos.length === 0) {
+        console.log("Nenhum pedido encontrado para esse cliente.");
+        return;
+    }
+    console.log("\n=== RECIBO ===");
+    var nome = pedidos[0].cliente_nome;
+    var cpf = pedidos[0].cliente_cpf;
+    console.log("Cliente: ".concat(nome, " (CPF: ").concat(cpf, ")"));
+    var total = 0;
+    pedidos.forEach(function (p, i) {
+        var preco = parseFloat(p.preco);
+        var qtd = parseInt(p.quantidade);
+        var subtotal = preco * qtd;
+        total += subtotal;
+        console.log("".concat(i + 1, ". ").concat(p.produto, "  x").concat(p.quantidade, "  R$ ").concat(subtotal.toFixed(2)));
+    });
+    console.log("----------------------------");
+    console.log("Total: R$ ".concat(total.toFixed(2), "\n"));
+}
+// Função que lê e filtra pedidos
+function buscarPedidosPorCliente(identificador) {
+    var _a;
+    var conteudo = fs.readFileSync(pedidosPath, "utf-8");
+    var linhas = conteudo.trim().split("\n");
+    var cabecalho = ((_a = linhas.shift()) === null || _a === void 0 ? void 0 : _a.split(",")) || [];
+    var pedidos = linhas
+        .map(function (linha) {
+        var valores = linha.split(",");
+        var pedido = {};
+        cabecalho.forEach(function (col, i) { return (pedido[col.trim()] = valores[i].trim()); });
+        return pedido;
+    })
+        .filter(function (p) {
+        var _a;
+        return ((_a = p["cliente_nome"]) === null || _a === void 0 ? void 0 : _a.toLowerCase()) === identificador.toLowerCase() ||
+            p["cliente_cpf"] === identificador;
+    });
+    return pedidos;
+}
+if (escolhaInc === '2') {
+    var entrada = rs.question("Digite o nome ou CPF do cliente para gerar o recibo: ");
+    var pedidosCliente = buscarPedidosPorCliente(entrada);
+    gerarRecibo(pedidosCliente);
 }

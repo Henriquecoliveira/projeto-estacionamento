@@ -144,11 +144,10 @@
 
 //Criar o csv do arquivo de pedidos
 const inputData = path.resolve(__dirname, "Pedidos.csv");
-const header = "pizza;data_hora;mes;pagamento;nomeCliente;cpfCliente\n";
 
 // garante que o arquivo existe e tem o cabeçalho
 if (!fs.existsSync(inputData) || fs.readFileSync(inputData, "utf-8").trim() === "") {
-  fs.writeFileSync(inputData, header, "utf-8");
+  fs.writeFileSync(inputData, "utf-8");
 }
 
 
@@ -167,7 +166,7 @@ type Bebida = {
   tamanho?: string;
 }
 
-//Criar a mesma interface para as sobremesas]
+//Criar a mesma interface para as sobremesas
 type Sobremesa = {
   nome: string;
   preco: number;
@@ -182,7 +181,7 @@ type FormadePagamento = {
     console.log("----------- PIZZARIA HENRIQUE --------------");
     console.log("\nO que deseja fazer?")
     console.log("1 -) Realizar um pedido")
-    console.log("2 -) Cadastrar")
+    console.log("2 -) Recibo")
     console.log("3 -) Sair")
 
     const  escolhaInc = rs.question("\nDigite o numero do que deseja fazer: "); //Criar constante da ação a fazer
@@ -432,30 +431,82 @@ console.log(`\nForma de pagamento escolhida: ${formaPagamentoEscolhida.nome}`);
 const pizzasStr = pedidoPizzas.map(p => `${p.nome} (${p.tamanho})`).join(", ");
 const agora = new Date();
 const data_hora = agora.toLocaleString("pt-BR");
-const mes = String(agora.getMonth() + 1);
+const precoTotal = total;
 
-const linha = `${pizzasStr};${data_hora};${mes};${formaPagamentoEscolhida.nome};${clienteLogado?.nomeCliente ?? "N/A"};${clienteLogado?.cpfCliente ?? "N/A"}\n`;
-fs.appendFileSync(inputData, linha, "utf-8");
+const linha = `Cliente ${clienteLogado?.nomeCliente ?? "N/A"} do CPF: ;${clienteLogado?.cpfCliente ?? "N/A"}\nPediu ${pizzasStr} às ${data_hora} e pagou R$${precoTotal} no ${formaPagamentoEscolhida.nome}\n`;
+fs.appendFileSync(inputData, linha);
 
  }
     if (pedidoBebidas.length > 0) { //salvar as bebidas da mesma maneira
-  const bebidasStr = pedidoBebidas.map(b => `${b.nome} (${b.tamanho})`).join(", ");
-  const agora = new Date(); //criar para salvar a data
-  const data_hora = agora.toLocaleString("pt-BR");
-  const mes = String(agora.getMonth() + 1);
-
-  const linha = `Bebidas do dia ${data_hora}; mes: ${mes}: ${bebidasStr} pagamento: ${formaPagamentoEscolhida.nome}\n`;//forma padrao para salvar (nome da bebida)(data e hora do pedido)(mes)(forma de pagamento)
-  fs.appendFileSync(inputData, linha, "utf-8");
-
-    if (pedidoSobremesa.length > 0) { //salvar as sobremesas da mesma maneira
-  const sobremesaStr = pedidoSobremesa.map(s => `${s.nome}`).join(", ");
-  const agora = new Date(); //criar para salvar a data
-  const data_hora = agora.toLocaleString("pt-BR");
-  const mes = String(agora.getMonth() + 1);
-
-  const linha = `Sobremesas do dia ${data_hora}; mes: ${mes}: ${sobremesaStr} pagamento: ${formaPagamentoEscolhida.nome}\n`;//forma padrao para salvar (nome da sobremesa)(data e hora do pedido)(mes)(forma de pagamento)
-  fs.appendFileSync(inputData, linha, "utf-8");
+      const bebidasStr = pedidoBebidas.map(b => `${b.nome} (${b.tamanho})`).join(", ");
+      
+      const linha = `Bebida(s) inclusa(s): ${bebidasStr}\n`;
+      fs.appendFileSync(inputData, linha, "utf-8");
+      
+      if (pedidoSobremesa.length > 0) { //salvar as sobremesas da mesma maneira
+        const sobremesaStr = pedidoSobremesa.map(s => `${s.nome}`).join(", ");
+        
+        const linha = `Sobremesa(s) inclusa(s) ${sobremesaStr}\n`;  fs.appendFileSync(inputData, linha, "utf-8");
+      }
     }
-}
+  }
+  ////////////////////////////////////////////////////////////////////////////
+  // Caminho do CSV
+  const pedidosPath = path.join(__dirname, "Pedidos.csv");
 
+  function gerarRecibo(pedidos: Record<string, string>[]) {
+  if (pedidos.length === 0) {
+    console.log("Nenhum pedido encontrado para esse cliente.");
+    return;
+  }
+
+  console.log("\n=== RECIBO ===");
+  const nome = pedidos[0].cliente_nome;
+  const cpf = pedidos[0].cliente_cpf;
+  console.log(`Cliente: ${nome} (CPF: ${cpf})`);
+
+  let total = 0;
+  pedidos.forEach((p, i) => {
+    const preco = parseFloat(p.preco);
+    const qtd = parseInt(p.quantidade);
+    const subtotal = preco * qtd;
+    total += subtotal;
+    console.log(
+      `${i + 1}. ${p.produto}  x${p.quantidade}  R$ ${subtotal.toFixed(2)}`
+    );
+  });
+
+  console.log("----------------------------");
+  console.log(`Total: R$ ${total.toFixed(2)}\n`);
 }
+// Função que lê e filtra pedidos
+function buscarPedidosPorCliente(identificador: string) {
+  const conteudo = fs.readFileSync(pedidosPath, "utf-8");
+  const linhas = conteudo.trim().split("\n");
+  const cabecalho = linhas.shift()?.split(",") || [];
+  
+  const pedidos = linhas
+  .map((linha) => {
+          const valores = linha.split(",");
+          const pedido: Record<string, string> = {};
+          cabecalho.forEach((col, i) => (pedido[col.trim()] = valores[i].trim()));
+          return pedido;
+        })
+        .filter(
+          (p) =>
+            p["cliente_nome"]?.toLowerCase() === identificador.toLowerCase() ||
+            p["cliente_cpf"] === identificador
+        );
+
+      return pedidos;
+    }
+if (escolhaInc === '2') {
+
+      const entrada = rs.question(
+        "Digite o nome ou CPF do cliente para gerar o recibo: "
+      );
+
+      const pedidosCliente = buscarPedidosPorCliente(entrada);
+      gerarRecibo(pedidosCliente);
+    }
+  
