@@ -1,3 +1,3 @@
-nomeCliente; cpfCliente; phoneNumber; email
-HENRIQUE;40289228914;11999999999;Henrique@gmail.com
-N;1;1;m
+nomeCliente; cpfCliente; phoneNumber; endereco; numero_residencia
+HENRIQUE;12345678911;1;Rua Barao;480
+JOAO;123;321;Rua da rua;140

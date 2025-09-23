@@ -1,4 +1,3 @@
-utf-8Cliente N do CPF: ;1
-Pediu 3 ---- Quatro Queijos ---- (pequena) às 21/09/2025, 21:31:25 e pagou R$46 no Dinheiro
-Bebida(s) inclusa(s): 5 - Suco Natural 300ml (300ml)
-Sobremesa(s) inclusa(s) 1 - Coca-Cola 500ml
+cliente_nome;cliente_cpf;pizza;data_hora;precoTotal;formaDePagamento;endereco
+JOAO;123;Pepperoni (pequena),Bacon com Cheddar (media);Agua 300ml (300ml),Coca-Cola 500ml (500ml);Torta Holandesa (Pequena),Pizza Doce de Chocolate (Pequena);22/09/2025, 22:47:50;146;Cartão de Débito;Rua da rua
+JOAO;123;Quatro Queijos (pequena);;;22/09/2025, 22:48:23;35;Pix;Rua da rua
