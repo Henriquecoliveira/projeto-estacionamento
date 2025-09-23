@@ -1,3 +1,4 @@
-cliente_nome;cliente_cpf;pizza;data_hora;precoTotal;formaDePagamento;endereco
-JOAO;123;Pepperoni (pequena),Bacon com Cheddar (media);Agua 300ml (300ml),Coca-Cola 500ml (500ml);Torta Holandesa (Pequena),Pizza Doce de Chocolate (Pequena);22/09/2025, 22:47:50;146;Cartão de Débito;Rua da rua
-JOAO;123;Quatro Queijos (pequena);;;22/09/2025, 22:48:23;35;Pix;Rua da rua
+cliente_nome;cliente_cpf;pizza(s);bebida(s);sobremesa(s);data_hora;precoTotal;formaDePagamento;endereco
+HENRIQUE;12345678911;Pepperoni (pequena);Soda 500ml (300ml), Guarana 500ml (500ml), Soda 500ml (300ml);Pizza Doce de Chocolate (Pequena);22/09/2025, 23:29:38;92.5;Pix;Rua Barao
+HENRIQUE;12345678911;Vegetariana (grande), Bacon com Cheddar (pequena);;Pizza Doce de Chocolate (Pequena);22/09/2025, 23:30:06;125;Cartao de Debito;Rua Barao
+ADM;1;Margherita (pequena);;;22/09/2025, 23:33:23;25;Dinheiro;1

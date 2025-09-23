@@ -75,9 +75,9 @@
     // ----------------------------  Entrada de Clientes ---------------------------- 
 
     /*
-     !! ------ função utilizada na customer_registration === 2 ------ !!
+    !! ------ função utilizada na customer_registration === 2 ------ !!
 
-     "customer_registration === 2" é a condição que a constante tem que estar
+    "customer_registration === 2" é a condição que a constante tem que estar
     para cadastrar novos clientes, essa parte do código aparece na linha === 147
     */
 
@@ -192,7 +192,7 @@ const inputData = path.resolve(__dirname, "Pedidos.csv");
 //Garante que o arquivo existe e tem o cabeçalho
 
 if (!fs.existsSync(inputData) || fs.readFileSync(inputData, "utf-8").trim() === "") {
-  fs.writeFileSync(inputData, "cliente_nome;cliente_cpf;pizza;data_hora;precoTotal;formaDePagamento;endereco\n", "utf-8");
+  fs.writeFileSync(inputData, "cliente_nome;cliente_cpf;pizza(s);bebida(s);sobremesa(s);data_hora;precoTotal;formaDePagamento;endereco\n", "utf-8");
 }
 
 //Tipos que serão utilizados posteriormente para a montagem dos pedidos
@@ -461,63 +461,53 @@ if (escolhaInc === '1') {
     const linha = `${clienteLogado?.nomeCliente ?? "N/A"};${clienteLogado?.cpfCliente ?? "N/A"};${pizzasStr};${bebidasStr};${sobremesaStr};${data_hora};${precoTotal};${formaPagamentoEscolhida.nome};${clienteLogado?.endereco ?? "N/A"}\n`;
     fs.appendFileSync(inputData, linha);
   }
-/*
-  if (pedidoBebidas.length > 0) { //salvar as bebidas da mesma maneira
-        
-    const linha = `Bebida(s) inclusa(s): ${bebidasStr}\n`;
-    fs.appendFileSync(inputData, linha, "utf-8");
-        
-    if (pedidoSobremesa.length > 0) { //salvar as sobremesas da mesma maneira
-          
-      const linha = `Sobremesa(s) inclusa(s) ${sobremesaStr}\n`;  fs.appendFileSync(inputData, linha, "utf-8");
-      fs.appendFileSync(inputData, linha, "utf-8");
-
-    }
-  }*/
 }
   
-  ////////////////////////////////////////////////////////////////////////////
-/*
+////////////////////////////////////////////////////////////////////////////
+/* 
+----------------------------------------------------------------------------------------------------------------
+Bloco de código que compõe as funções, diretórios de armazenamento de dados, entradas e saídas da 
+escolhaInc === 2
+----------------------------------------------------------------------------------------------------------------
+*/
+//!! ------ funções utilizada para escolhaInc === '2' ------ !!
 
+// Caminho do CSV
+const pedidosPath = path.join(__dirname, "Pedidos.csv");
 
-
-  // Caminho do CSV
-  const pedidosPath = path.join(__dirname, "Pedidos.csv");
-
-  function gerarRecibo(pedidos: Record<string, string>[]) {
-  if (pedidos.length === 0) {
-    console.log("Nenhum pedido encontrado para esse cliente.");
-    return;
-  } else {
-  console.log("\n=== RECIBO ===");
-  const nome = pedidos[0].cliente_nome;
-  const cpf = pedidos[0].cliente_cpf;
-  console.log(`Cliente: ${nome} (CPF: ${cpf})`);
-  }
-
-  let total = 0;
-  pedidos.forEach((p, i) => {
-    const preco = parseFloat(p.precoTotal);
-    const qtd = parseInt(p.quantidade);
-    const subtotal = preco * qtd;
-    total += subtotal;
-    console.log(
-      `${i + 1}. ${p.produto}  x${p.quantidade}  R$ ${subtotal.toFixed(2)}`
-    );
-  });
-
-  console.log("----------------------------");
-  console.log(`Total: R$ ${total.toFixed(2)}\n`);
+function gerarRecibo(pedidos: Record<string, string>[]) {
+if (pedidos.length === 0) {
+  console.log("Nenhum pedido encontrado para esse cliente.");
+  return;
 }
+
+console.log("\n=== RECIBO ===");
+const nome = pedidos[0]["cliente_nome"];
+const cpf = pedidos[0]["cliente_cpf"];
+console.log(`Cliente: ${nome} (CPF: ${cpf})\n`);
+
+let total = 0;
+pedidos.forEach((p, i) => {
+  const preco = parseFloat(p["precoTotal"]);
+  total += preco;
+  console.log(
+    `${i + 1}. Pizzas: ${p["pizza(s)"]} | Bebidas: ${p["bebida(s)"]} | Sobremesas: ${p["sobremesa(s)"]}  - R$ ${preco.toFixed(2)}`
+  );
+});
+
+console.log("----------------------------");
+console.log(`Total gasto na pizzaria: R$ ${total.toFixed(2)}\n`);
+}
+
 // Função que lê e filtra pedidos
 function buscarPedidosPorCliente(identificador: string) {
   const conteudo = fs.readFileSync(pedidosPath, "utf-8");
   const linhas = conteudo.trim().split("\n");
-  const cabecalho = linhas.shift()?.split(",") || [];
+  const cabecalho = linhas.shift()?.split(";") || [];
   
   const pedidos = linhas
   .map((linha) => {
-          const valores = linha.split(",");
+          const valores = linha.split(";");
           const pedido: Record<string, string> = {};
           cabecalho.forEach((col, i) => (pedido[col.trim()] = valores[i].trim()));
           return pedido;
@@ -530,6 +520,7 @@ function buscarPedidosPorCliente(identificador: string) {
 
       return pedidos;
     }
+
 if (escolhaInc === '2') {
 
       const entrada = rs.question(
@@ -538,5 +529,90 @@ if (escolhaInc === '2') {
 
       const pedidosCliente = buscarPedidosPorCliente(entrada);
       gerarRecibo(pedidosCliente);
-    }
-  */
+}
+
+////////////////////////////////////////////////////////////////////////////
+/* 
+----------------------------------------------------------------------------------------------------------------
+Bloco de código que compõe as funções, diretórios de armazenamento de dados, entradas e saídas da 
+escolhaInc === 3
+----------------------------------------------------------------------------------------------------------------
+*/
+if (escolhaInc === "3") {
+  console.log("\nFim do programa!");
+}
+/* 
+----------------------------------------------------------------------------------------------------------------
+Bloco de código que compõe as funções, diretórios de armazenamento de dados, entradas e saídas da 
+escolhaInc === 4
+----------------------------------------------------------------------------------------------------------------
+*/
+
+//!! ------ função utilizada para escolhaInc === '4' ------ !!
+
+function gerarRelatorio() {
+if (!fs.existsSync(inputData)) {
+  console.log("Nenhum pedido encontrado.");
+  return;
+}
+
+const conteudo = fs.readFileSync(inputData, "utf-8");
+const linhas = conteudo.trim().split("\n");
+
+if (linhas.length <= 1) {
+  console.log("Nenhum pedido registrado ainda.");
+  return;
+}
+
+const cabecalho = linhas.shift()?.split(";") || [];
+const pedidos = linhas.map((linha) => {
+const valores = linha.split(";");
+const pedido: Record<string, string> = {};
+cabecalho.forEach((col, i) => (pedido[col.trim()] = valores[i]?.trim() || ""));
+return pedido;
+});
+
+console.log("\n====== RELATÓRIO GERAL ======\n");
+
+// Total arrecadado
+
+let totalArrecadado = 0; //Inicia o total arrecadado como zero
+pedidos.forEach(p => totalArrecadado += parseFloat(p.precoTotal)); // Acrescenta o valor do precoTotal de cada linha ao totalArrecadado
+
+console.log(`📌 Total de pedidos registrados: ${pedidos.length}`);
+console.log(`💰 Valor total arrecadado: R$ ${totalArrecadado.toFixed(2)}\n`);
+
+// Agrupar por cliente
+
+const vendasPorCliente: Record<string, number> = {};
+pedidos.forEach(p => {
+  const cliente = `${p.cliente_nome} (${p.cliente_cpf})`;
+  vendasPorCliente[cliente] = (vendasPorCliente[cliente] || 0) + parseFloat(p.precoTotal);
+});
+
+console.log("📊 Vendas por Cliente:");
+for (const cliente in vendasPorCliente) {
+  console.log(` - ${cliente}: R$ ${vendasPorCliente[cliente].toFixed(2)}`);
+}
+
+// Agrupar por produto
+
+const vendasPorProduto: Record<string, number> = {};
+pedidos.forEach(p => {
+  const produto = p.produto;
+  vendasPorProduto[produto] = (vendasPorProduto[produto] || 0) + parseFloat(p.precoTotal);
+});
+
+console.log("\n🍕 Vendas por Produto:");
+for (const produto in vendasPorProduto) {
+  console.log(` - ${produto}: R$ ${vendasPorProduto[produto].toFixed(2)}`);
+}
+
+console.log("\n====== FIM DO RELATÓRIO ======\n");
+}
+
+if (escolhaInc === '4') {
+  gerarRelatorio();
+}
+
+////////////////////////////////////////////////////////////////////////////

@@ -58,9 +58,9 @@ if (!fs.existsSync(inputCliente) || fs.readFileSync(inputCliente, 'utf-8').trim(
 }
 // ----------------------------  Entrada de Clientes ---------------------------- 
 /*
- !! ------ função utilizada na customer_registration === 2 ------ !!
+!! ------ função utilizada na customer_registration === 2 ------ !!
 
- "customer_registration === 2" é a condição que a constante tem que estar
+"customer_registration === 2" é a condição que a constante tem que estar
 para cadastrar novos clientes, essa parte do código aparece na linha === 147
 */
 function verificarClientesCadastrados() {
@@ -78,7 +78,7 @@ function requestNewInputOfCliente() {
         var cpfCliente = rs.question("Digite o CPF do cliente: ").trim();
         var phoneNumber = rs.question("Digite o telefone do cliente: ").trim();
         var endereco = rs.question("Digite o endereco do cliente: ").trim();
-        var numero_residencia = rs.question("Digite o número da residencia: ").trim();
+        var numero_residencia = rs.question("Digite o numero da residencia: ").trim();
         // Cria um novo objeto Cliente com as entradas do usuário
         var newRequestCliente = {
             nomeCliente: nomeCliente,
@@ -124,10 +124,6 @@ while (customer_registration !== 9) {
     }
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-//const clienteNome = clienteLogado?.nomeCliente; // guarda em outra constante o nome do cliente para facilitar seu uso no resto do código
-//const clienteCpf = clienteLogado?.cpfCliente; // guarda em outra constante o cpf do cliente para facilitar seu uso no resto do código
-//const clienteEndereco = clienteLogado?.endereco; // // guarda em outra constante o cpf do cliente para facilitar seu uso no resto do código
-/////////////////////////////////////////////////////////////////////////////////////////////////////
 // ---------------------------- Sistema de pedidos da pizzaria ----------------------------
 // Menu inicial pós tela de cadastro do cliente
 console.log("----------- PIZZARIA HENRIQUE --------------");
@@ -148,7 +144,7 @@ escolhaInc === 1
 var inputData = path.resolve(__dirname, "Pedidos.csv");
 //Garante que o arquivo existe e tem o cabeçalho
 if (!fs.existsSync(inputData) || fs.readFileSync(inputData, "utf-8").trim() === "") {
-    fs.writeFileSync(inputData, "cliente_nome;cliente_cpf;pizza;data_hora;precoTotal;formaDePagamento;endereco\n", "utf-8");
+    fs.writeFileSync(inputData, "cliente_nome;cliente_cpf;pizza(s);bebida(s);sobremesa(s);data_hora;precoTotal;formaDePagamento;endereco\n", "utf-8");
 }
 if (escolhaInc === '1') {
     //Cria um cardápio com os sabores de pizza
@@ -165,7 +161,7 @@ if (escolhaInc === '1') {
     //Cria um cardapio para as bebidas disponiveis
     var bebidas = [
         { numero_bebida: '1', nome: 'Coca-Cola 500ml', preco: 5.00, tamanho: '500ml' },
-        { numero_bebida: '2', nome: 'Guaraná 500ml', preco: 4.50, tamanho: '500ml' },
+        { numero_bebida: '2', nome: 'Guarana 500ml', preco: 4.50, tamanho: '500ml' },
         { numero_bebida: '3', nome: 'Soda 500ml', preco: 4.00, tamanho: '300ml' },
         { numero_bebida: '4', nome: 'Pepsi 500ml', preco: 4.00, tamanho: '300ml' },
         { numero_bebida: '5', nome: 'Suco Natural 300ml', preco: 6.00, tamanho: '300ml' },
@@ -176,6 +172,13 @@ if (escolhaInc === '1') {
         { numero_sobremesa: '1', nome: 'Pizza Doce de Chocolate (Pequena)', preco: 35.00, },
         { numero_sobremesa: '2', nome: 'Pizza Doce de Banana Nevada (Pequena)', preco: 34.50, },
         { numero_sobremesa: '3', nome: 'Torta Holandesa (Pequena)', preco: 14.00, },
+    ];
+    //Cria as opções de forma de pagamento
+    var formasPagamento = [
+        { nome: "Dinheiro" },
+        { nome: "Cartao de Debito" },
+        { nome: "Cartao de Credito" },
+        { nome: "Pix" }
     ];
     //Cria a variavel que vai receber os valores do pedido
     var pedidoPizzas = [];
@@ -217,7 +220,7 @@ if (escolhaInc === '1') {
     if (querBebida === 's') {
         var continuarBebidas = true; //Caso seja sim a respota ele continua
         while (continuarBebidas) {
-            console.log("\n--- Bebidas Disponíveis ---");
+            console.log("\n--- Bebidas Disponíveis ---\n");
             bebidas.forEach(function (bebida) {
                 console.log("".concat(bebida.numero_bebida, " ---- ").concat(bebida.nome, " ---- R$ ").concat(bebida.preco.toFixed(2)));
             });
@@ -242,7 +245,7 @@ if (escolhaInc === '1') {
     if (querSobremesa === 's') {
         var continuarSobremesa = true; //Caso seja sim a respota ele continua
         while (continuarSobremesa) {
-            console.log("\n--- Sobremesas Disponíveis ---");
+            console.log("\n--- Sobremesas Disponíveis ---\n");
             sobremesas.forEach(function (sobremesas) {
                 console.log("".concat(sobremesas.numero_sobremesa, " ---- ").concat(sobremesas.nome, " ---- R$ ").concat(sobremesas.preco.toFixed(2)));
             });
@@ -289,12 +292,6 @@ if (escolhaInc === '1') {
     console.log("\nTotal a pagar: R$ ".concat(total_1.toFixed(2))); //Mostrar quanto devera ser pago
     //Forma de pagamento
     console.log("\nFormas de pagamento disponíveis:");
-    var formasPagamento = [
-        { nome: "Dinheiro" },
-        { nome: "Cartão de Débito" },
-        { nome: "Cartão de Crédito" },
-        { nome: "Pix" }
-    ];
     formasPagamento.forEach(function (fp, i) {
         console.log("".concat(i + 1, " - ").concat(fp.nome));
     });
@@ -313,90 +310,124 @@ if (escolhaInc === '1') {
     console.log("\nForma de pagamento escolhida: ".concat(formaPagamentoEscolhida.nome));
     // ---------------------------- Salvar no Pedidos.csv ----------------------------
     if (pedidoPizzas.length > 0) { //caso o pedido tenha sido feito ele salva
-        var pizzasStr = pedidoPizzas.map(function (p) { return "".concat(p.nome, " (").concat(p.tamanho, ")"); }).join(",");
-        var bebidasStr = pedidoBebidas.map(function (b) { return "".concat(b.nome, " (").concat(b.tamanho, ")"); }).join(",");
-        var sobremesaStr = pedidoSobremesa.map(function (s) { return "".concat(s.nome); }).join(",");
+        var pizzasStr = pedidoPizzas.map(function (p) { return "".concat(p.nome, " (").concat(p.tamanho, ")"); }).join(", ");
+        var bebidasStr = pedidoBebidas.map(function (b) { return "".concat(b.nome, " (").concat(b.tamanho, ")"); }).join(", ");
+        var sobremesaStr = pedidoSobremesa.map(function (s) { return "".concat(s.nome); }).join(", ");
         var agora = new Date();
         var data_hora = agora.toLocaleString("pt-BR");
         var precoTotal = total_1;
         var linha = "".concat((_a = clienteLogado === null || clienteLogado === void 0 ? void 0 : clienteLogado.nomeCliente) !== null && _a !== void 0 ? _a : "N/A", ";").concat((_b = clienteLogado === null || clienteLogado === void 0 ? void 0 : clienteLogado.cpfCliente) !== null && _b !== void 0 ? _b : "N/A", ";").concat(pizzasStr, ";").concat(bebidasStr, ";").concat(sobremesaStr, ";").concat(data_hora, ";").concat(precoTotal, ";").concat(formaPagamentoEscolhida.nome, ";").concat((_c = clienteLogado === null || clienteLogado === void 0 ? void 0 : clienteLogado.endereco) !== null && _c !== void 0 ? _c : "N/A", "\n");
         fs.appendFileSync(inputData, linha);
     }
-    /*
-      if (pedidoBebidas.length > 0) { //salvar as bebidas da mesma maneira
-            
-        const linha = `Bebida(s) inclusa(s): ${bebidasStr}\n`;
-        fs.appendFileSync(inputData, linha, "utf-8");
-            
-        if (pedidoSobremesa.length > 0) { //salvar as sobremesas da mesma maneira
-              
-          const linha = `Sobremesa(s) inclusa(s) ${sobremesaStr}\n`;  fs.appendFileSync(inputData, linha, "utf-8");
-          fs.appendFileSync(inputData, linha, "utf-8");
-    
-        }
-      }*/
 }
 ////////////////////////////////////////////////////////////////////////////
 /*
-
-
-
-  // Caminho do CSV
-  const pedidosPath = path.join(__dirname, "Pedidos.csv");
-
-  function gerarRecibo(pedidos: Record<string, string>[]) {
-  if (pedidos.length === 0) {
-    console.log("Nenhum pedido encontrado para esse cliente.");
-    return;
-  } else {
-  console.log("\n=== RECIBO ===");
-  const nome = pedidos[0].cliente_nome;
-  const cpf = pedidos[0].cliente_cpf;
-  console.log(`Cliente: ${nome} (CPF: ${cpf})`);
-  }
-
-  let total = 0;
-  pedidos.forEach((p, i) => {
-    const preco = parseFloat(p.precoTotal);
-    const qtd = parseInt(p.quantidade);
-    const subtotal = preco * qtd;
-    total += subtotal;
-    console.log(
-      `${i + 1}. ${p.produto}  x${p.quantidade}  R$ ${subtotal.toFixed(2)}`
-    );
-  });
-
-  console.log("----------------------------");
-  console.log(`Total: R$ ${total.toFixed(2)}\n`);
+----------------------------------------------------------------------------------------------------------------
+Bloco de código que compõe as funções, diretórios de armazenamento de dados, entradas e saídas da
+escolhaInc === 4
+----------------------------------------------------------------------------------------------------------------
+*/
+//!! ------ função utilizada para escolhaInc === '4' ------ !!
+function gerarRelatorio() {
+    var _a;
+    if (!fs.existsSync(inputData)) {
+        console.log("Nenhum pedido encontrado.");
+        return;
+    }
+    var conteudo = fs.readFileSync(inputData, "utf-8");
+    var linhas = conteudo.trim().split("\n");
+    if (linhas.length <= 1) {
+        console.log("Nenhum pedido registrado ainda.");
+        return;
+    }
+    var cabecalho = ((_a = linhas.shift()) === null || _a === void 0 ? void 0 : _a.split(";")) || [];
+    var pedidos = linhas.map(function (linha) {
+        var valores = linha.split(";");
+        var pedido = {};
+        cabecalho.forEach(function (col, i) { var _a; return (pedido[col.trim()] = ((_a = valores[i]) === null || _a === void 0 ? void 0 : _a.trim()) || ""); });
+        return pedido;
+    });
+    console.log("\n====== RELATÓRIO GERAL ======\n");
+    // Total arrecadado
+    var totalArrecadado = 0; //Inicia o total arrecadado como zero
+    pedidos.forEach(function (p) { return totalArrecadado += parseFloat(p.precoTotal); }); // Acrescenta o valor do precoTotal de cada linha ao totalArrecadado
+    console.log("\uD83D\uDCCC Total de pedidos registrados: ".concat(pedidos.length));
+    console.log("\uD83D\uDCB0 Valor total arrecadado: R$ ".concat(totalArrecadado.toFixed(2), "\n"));
+    // Agrupar por cliente
+    var vendasPorCliente = {};
+    pedidos.forEach(function (p) {
+        var cliente = "".concat(p.cliente_nome, " (").concat(p.cliente_cpf, ")");
+        vendasPorCliente[cliente] = (vendasPorCliente[cliente] || 0) + parseFloat(p.precoTotal);
+    });
+    console.log("📊 Vendas por Cliente:");
+    for (var cliente in vendasPorCliente) {
+        console.log(" - ".concat(cliente, ": R$ ").concat(vendasPorCliente[cliente].toFixed(2)));
+    }
+    // Agrupar por produto
+    var vendasPorProduto = {};
+    pedidos.forEach(function (p) {
+        var produto = p.produto;
+        vendasPorProduto[produto] = (vendasPorProduto[produto] || 0) + parseFloat(p.precoTotal);
+    });
+    console.log("\n🍕 Vendas por Produto:");
+    for (var produto in vendasPorProduto) {
+        console.log(" - ".concat(produto, ": R$ ").concat(vendasPorProduto[produto].toFixed(2)));
+    }
+    console.log("\n====== FIM DO RELATÓRIO ======\n");
+}
+if (escolhaInc === '4') {
+    gerarRelatorio();
+}
+////////////////////////////////////////////////////////////////////////////
+/*
+----------------------------------------------------------------------------------------------------------------
+Bloco de código que compõe as funções, diretórios de armazenamento de dados, entradas e saídas da
+escolhaInc === 4
+----------------------------------------------------------------------------------------------------------------
+*/
+//!! ------ funções utilizada para escolhaInc === '2' ------ !!
+// Caminho do CSV
+var pedidosPath = path.join(__dirname, "Pedidos.csv");
+function gerarRecibo(pedidos) {
+    if (pedidos.length === 0) {
+        console.log("Nenhum pedido encontrado para esse cliente.");
+        return;
+    }
+    console.log("\n=== RECIBO ===");
+    var nome = pedidos[0]["cliente_nome"];
+    var cpf = pedidos[0]["cliente_cpf"];
+    console.log("Cliente: ".concat(nome, " (CPF: ").concat(cpf, ")\n"));
+    var total = 0;
+    pedidos.forEach(function (p, i) {
+        var preco = parseFloat(p["precoTotal"]);
+        total += preco;
+        console.log("".concat(i + 1, ". Pizzas: ").concat(p["pizza(s)"], " | Bebidas: ").concat(p["bebida(s)"], " | Sobremesas: ").concat(p["sobremesa(s)"], "  - R$ ").concat(preco.toFixed(2)));
+    });
+    console.log("----------------------------");
+    console.log("Total: R$ ".concat(total.toFixed(2), "\n"));
 }
 // Função que lê e filtra pedidos
-function buscarPedidosPorCliente(identificador: string) {
-  const conteudo = fs.readFileSync(pedidosPath, "utf-8");
-  const linhas = conteudo.trim().split("\n");
-  const cabecalho = linhas.shift()?.split(",") || [];
-  
-  const pedidos = linhas
-  .map((linha) => {
-          const valores = linha.split(",");
-          const pedido: Record<string, string> = {};
-          cabecalho.forEach((col, i) => (pedido[col.trim()] = valores[i].trim()));
-          return pedido;
-        })
-        .filter(
-          (p) =>
-            p["cliente_nome"]?.toLowerCase() === identificador.toLowerCase() ||
-            p["cliente_cpf"] === identificador
-        );
-
-      return pedidos;
-    }
+function buscarPedidosPorCliente(identificador) {
+    var _a;
+    var conteudo = fs.readFileSync(pedidosPath, "utf-8");
+    var linhas = conteudo.trim().split("\n");
+    var cabecalho = ((_a = linhas.shift()) === null || _a === void 0 ? void 0 : _a.split(";")) || [];
+    var pedidos = linhas
+        .map(function (linha) {
+        var valores = linha.split(";");
+        var pedido = {};
+        cabecalho.forEach(function (col, i) { return (pedido[col.trim()] = valores[i].trim()); });
+        return pedido;
+    })
+        .filter(function (p) {
+        var _a;
+        return ((_a = p["cliente_nome"]) === null || _a === void 0 ? void 0 : _a.toLowerCase()) === identificador.toLowerCase() ||
+            p["cliente_cpf"] === identificador;
+    });
+    return pedidos;
+}
 if (escolhaInc === '2') {
-
-      const entrada = rs.question(
-        "Digite o nome ou CPF do cliente para gerar o recibo: "
-      );
-
-      const pedidosCliente = buscarPedidosPorCliente(entrada);
-      gerarRecibo(pedidosCliente);
-    }
-  */ 
+    var entrada = rs.question("Digite o nome ou CPF do cliente para gerar o recibo: ");
+    var pedidosCliente = buscarPedidosPorCliente(entrada);
+    gerarRecibo(pedidosCliente);
+}
