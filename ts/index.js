@@ -101,7 +101,7 @@ while (customer_registration !== 9) {
     console.log("\n----------- Sistema de cadastro de cliente -----------\n");
     console.log("1 - Cadastrar cliente");
     console.log("2 - O cliente ja é cadastrado");
-    console.log("9 - Desligar programa");
+    console.log("9 - Passar para a página de pedidos");
     customer_registration = parseInt(rs.question("\nQual opcao voce deseja realizar? "));
     // if customer_registration === 1
     if (customer_registration === 1) {
@@ -324,65 +324,7 @@ if (escolhaInc === '1') {
 /*
 ----------------------------------------------------------------------------------------------------------------
 Bloco de código que compõe as funções, diretórios de armazenamento de dados, entradas e saídas da
-escolhaInc === 4
-----------------------------------------------------------------------------------------------------------------
-*/
-//!! ------ função utilizada para escolhaInc === '4' ------ !!
-function gerarRelatorio() {
-    var _a;
-    if (!fs.existsSync(inputData)) {
-        console.log("Nenhum pedido encontrado.");
-        return;
-    }
-    var conteudo = fs.readFileSync(inputData, "utf-8");
-    var linhas = conteudo.trim().split("\n");
-    if (linhas.length <= 1) {
-        console.log("Nenhum pedido registrado ainda.");
-        return;
-    }
-    var cabecalho = ((_a = linhas.shift()) === null || _a === void 0 ? void 0 : _a.split(";")) || [];
-    var pedidos = linhas.map(function (linha) {
-        var valores = linha.split(";");
-        var pedido = {};
-        cabecalho.forEach(function (col, i) { var _a; return (pedido[col.trim()] = ((_a = valores[i]) === null || _a === void 0 ? void 0 : _a.trim()) || ""); });
-        return pedido;
-    });
-    console.log("\n====== RELATÓRIO GERAL ======\n");
-    // Total arrecadado
-    var totalArrecadado = 0; //Inicia o total arrecadado como zero
-    pedidos.forEach(function (p) { return totalArrecadado += parseFloat(p.precoTotal); }); // Acrescenta o valor do precoTotal de cada linha ao totalArrecadado
-    console.log("\uD83D\uDCCC Total de pedidos registrados: ".concat(pedidos.length));
-    console.log("\uD83D\uDCB0 Valor total arrecadado: R$ ".concat(totalArrecadado.toFixed(2), "\n"));
-    // Agrupar por cliente
-    var vendasPorCliente = {};
-    pedidos.forEach(function (p) {
-        var cliente = "".concat(p.cliente_nome, " (").concat(p.cliente_cpf, ")");
-        vendasPorCliente[cliente] = (vendasPorCliente[cliente] || 0) + parseFloat(p.precoTotal);
-    });
-    console.log("📊 Vendas por Cliente:");
-    for (var cliente in vendasPorCliente) {
-        console.log(" - ".concat(cliente, ": R$ ").concat(vendasPorCliente[cliente].toFixed(2)));
-    }
-    // Agrupar por produto
-    var vendasPorProduto = {};
-    pedidos.forEach(function (p) {
-        var produto = p.produto;
-        vendasPorProduto[produto] = (vendasPorProduto[produto] || 0) + parseFloat(p.precoTotal);
-    });
-    console.log("\n🍕 Vendas por Produto:");
-    for (var produto in vendasPorProduto) {
-        console.log(" - ".concat(produto, ": R$ ").concat(vendasPorProduto[produto].toFixed(2)));
-    }
-    console.log("\n====== FIM DO RELATÓRIO ======\n");
-}
-if (escolhaInc === '4') {
-    gerarRelatorio();
-}
-////////////////////////////////////////////////////////////////////////////
-/*
-----------------------------------------------------------------------------------------------------------------
-Bloco de código que compõe as funções, diretórios de armazenamento de dados, entradas e saídas da
-escolhaInc === 4
+escolhaInc === 2
 ----------------------------------------------------------------------------------------------------------------
 */
 //!! ------ funções utilizada para escolhaInc === '2' ------ !!
@@ -404,9 +346,9 @@ function gerarRecibo(pedidos) {
         console.log("".concat(i + 1, ". Pizzas: ").concat(p["pizza(s)"], " | Bebidas: ").concat(p["bebida(s)"], " | Sobremesas: ").concat(p["sobremesa(s)"], "  - R$ ").concat(preco.toFixed(2)));
     });
     console.log("----------------------------");
-    console.log("Total: R$ ".concat(total.toFixed(2), "\n"));
+    console.log("Total gasto na pizzaria: R$ ".concat(total.toFixed(2), "\n"));
 }
-// Função que lê e filtra pedidos
+//Função que lê e filtra pedidos
 function buscarPedidosPorCliente(identificador) {
     var _a;
     var conteudo = fs.readFileSync(pedidosPath, "utf-8");
@@ -431,3 +373,61 @@ if (escolhaInc === '2') {
     var pedidosCliente = buscarPedidosPorCliente(entrada);
     gerarRecibo(pedidosCliente);
 }
+////////////////////////////////////////////////////////////////////////////
+/*
+----------------------------------------------------------------------------------------------------------------
+Bloco de código que compõe as funções, diretórios de armazenamento de dados, entradas e saídas da
+escolhaInc === 3
+----------------------------------------------------------------------------------------------------------------
+*/
+if (escolhaInc === "3") {
+    console.log("\nFim do programa!");
+}
+/*
+----------------------------------------------------------------------------------------------------------------
+Bloco de código que compõe as funções, diretórios de armazenamento de dados, entradas e saídas da
+escolhaInc === 4
+----------------------------------------------------------------------------------------------------------------
+*/
+//!! ------ função utilizada para escolhaInc === '4' ------ !!
+function gerarRelatorio() {
+    var _a;
+    if (!fs.existsSync(inputData)) {
+        console.log("Nenhum pedido encontrado.");
+        return;
+    }
+    var conteudo = fs.readFileSync(inputData, "utf-8");
+    var linhas = conteudo.trim().split("\n");
+    if (linhas.length <= 1) {
+        console.log("Nenhum pedido registrado ainda.");
+        return;
+    }
+    var cabecalho = ((_a = linhas.shift()) === null || _a === void 0 ? void 0 : _a.split(";")) || [];
+    var pedidos = linhas.map(function (linha) {
+        var valores = linha.split(";");
+        var pedido = {};
+        cabecalho.forEach(function (col, i) { var _a; return (pedido[col.trim()] = ((_a = valores[i]) === null || _a === void 0 ? void 0 : _a.trim()) || ""); });
+        return pedido;
+    });
+    console.log("\n====== RELATÓRIO GERAL ======\n");
+    //Total arrecadado
+    var totalArrecadado = 0; //Inicia o total arrecadado como zero
+    pedidos.forEach(function (p) { return totalArrecadado += parseFloat(p.precoTotal); }); // Acrescenta o valor do precoTotal de cada linha ao totalArrecadado
+    console.log("\uD83D\uDCCC Total de pedidos registrados: ".concat(pedidos.length));
+    console.log("\uD83D\uDCB0 Valor total arrecadado: R$ ".concat(totalArrecadado.toFixed(2), "\n"));
+    //Agrupar por cliente
+    var vendasPorCliente = {};
+    pedidos.forEach(function (p) {
+        var cliente = "".concat(p.cliente_nome, " (").concat(p.cliente_cpf, ")");
+        vendasPorCliente[cliente] = (vendasPorCliente[cliente] || 0) + parseFloat(p.precoTotal);
+    });
+    console.log("📊 Vendas por Cliente:");
+    for (var cliente in vendasPorCliente) {
+        console.log(" - ".concat(cliente, ": R$ ").concat(vendasPorCliente[cliente].toFixed(2)));
+    }
+    console.log("\n====== FIM DO RELATÓRIO ======\n");
+}
+if (escolhaInc === '4') {
+    gerarRelatorio();
+}
+////////////////////////////////////////////////////////////////////////////

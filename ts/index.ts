@@ -1,4 +1,11 @@
     // Sistemas de pizzaria em typescript
+    //Alunos e RA do grupo:
+    //João Miguel - RA:2511914
+    //Henrique Cordeiro - RA:2507350
+    //Geovana Cristina - RA:2504583
+    //Marcos Vinicius - RA:2506065
+    //Mysael Chuff - RA:2509494
+    
     // Biblíotecas necessárias para o funcionamento do sistema
 
     import * as fs from "fs"; // módulo para manipular arquivos
@@ -447,6 +454,9 @@ if (escolhaInc === '1') {
   }
 
   console.log(`\nForma de pagamento escolhida: ${formaPagamentoEscolhida.nome}`);
+
+  console.log(`\nPedido Realizado com sucesso! Só aguardar...`);
+
 
   // ---------------------------- Salvar no Pedidos.csv ----------------------------
 
