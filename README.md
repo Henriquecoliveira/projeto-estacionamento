@@ -1,15 +1,21 @@
+Pizzaria-em-Typescript
+
+Projeto de um software de pizzaria em typescript desenvolvido para cadastrar clientes, exibir relatorios e recibos além de realizar pedidos.
+
 🍕 Sistema de Pizzaria
 
-Projeto em *Node.js* para simular o sistema de uma pizzaria.  
-Com ele você pode cadastrar clientes, fazer pedidos (pizza, bebida, sobremesa) e ainda gerar recibos automáticos em CSV.  
+-Alunos e RA do grupo: João Miguel - RA:2511914 Henrique Cordeiro - RA:2507350 Geovana Cristina - RA:2504583 Marcos Vinicius - RA:2506065 Mysael Chuff - RA:2509494
 
-# O que precisa ter
-- [Node.js](https://nodejs.org/) instalado na sua máquina  
-- Dependências:  
-  - fs (já vem no Node)  
-  - path (já vem no Node)  
-  - readline-sync → instale com:
-```bash
+Projeto em Node.js para simular o sistema de uma pizzaria.
+Com ele você pode cadastrar clientes, fazer pedidos (pizza, bebida, sobremesa) e ainda gerar recibos automáticos em CSV.
+O que precisa ter
+
+    Node.js instalado na sua máquina
+    Dependências:
+        fs (já vem no Node)
+        path (já vem no Node)
+        readline-sync → instale com:
+
 npm install readline-sync
 
 -------------------------------------------------------
@@ -85,6 +91,9 @@ Ele vai listar todas às pizzas, bebidas e sobremesas pedidas pelo cliente, por 
 
 bancoDeDadosCliente.csv → onde ficam salvos os clientes
 
-Pedidos.csv → onde ficam salvos os pedidos e recibos
+Pedidos.csv → onde ficam salvos os pedidos e recibos![Fluxograma](https://github.com/user-attachments/assets/94bef54c-194b-4df2-8921-47e6c76d1c5d)
+![Diagrama de dependencias](https://github.com/user-attachments/assets/26bb5930-e067-4f92-b197-c8c37bce8e19)
+
 
 Recibos.csv → onde ficam salvos os recibos
+
