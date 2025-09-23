@@ -12,14 +12,15 @@ Com ele você pode cadastrar clientes, fazer pedidos (pizza, bebida, sobremesa) 
 ```bash
 npm install readline-sync
 
- Como rodar
+-------------------------------------------------------
+!!!Como rodar!!!
 
 1. Baixe ou clone o projeto.
 
 
 2. No terminal, entre na pasta e rode:
 
-node nomeDoArquivo.js
+node index.js
 
  Como usar
 
@@ -44,22 +45,23 @@ Depois de cadastrar/verificar o cliente, abre o menu principal:
 
 3 → Sair
 
+4 → Relatório
 
 -como funciona o pedido 
 
-1. Escolhe o sabor e o tamanho da pizza (pequena, média ou grande).
+ - 1. Escolhe o sabor e o tamanho da pizza (pequena, média ou grande).
 
 
-2. Decide se quer adicionar bebidas.
+ - 2. Decide se quer adicionar bebidas.
 
 
-3. Decide se quer incluir sobremesas.
+ - 3. Decide se quer incluir sobremesas.
 
 
-4. O sistema mostra um resumo com tudo o que foi pedido + o valor total.
+ - 4. O sistema mostra um resumo com tudo o que foi pedido + o valor total.
 
 
-5. Escolhe a forma de pagamento:
+ - 5. Escolhe a forma de pagamento:
 
 Dinheiro
 
@@ -76,8 +78,10 @@ Todos os pedidos ficam guardados em Pedidos.csv.
 
 Pra gerar um recibo é só ir no menu, escolher a opção 2 e informar o nome ou CPF do cliente.
 
+Ele vai listar todas às pizzas, bebidas e sobremesas pedidas pelo cliente, por pedido separadamente e, dará um total de quanto ele gastou na pizzaria.
 
-Arquivos que o sistema gera
+-------------------------------------------------------
+!!!Arquivos que o sistema gera!!!
 
 bancoDeDadosCliente.csv → onde ficam salvos os clientes
 
