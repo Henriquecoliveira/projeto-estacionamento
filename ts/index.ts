@@ -1,11 +1,4 @@
     // Sistemas de pizzaria em typescript
-    //Alunos e RA do grupo:
-    //João Miguel - RA:2511914
-    //Henrique Cordeiro - RA:2507350
-    //Geovana Cristina - RA:2504583
-    //Marcos Vinicius - RA:2506065
-    //Mysael Chuff - RA:2509494
-    
     // Biblíotecas necessárias para o funcionamento do sistema
 
     import * as fs from "fs"; // módulo para manipular arquivos
@@ -139,7 +132,7 @@
         console.log("\n----------- Sistema de cadastro de cliente -----------\n");
         console.log("1 - Cadastrar cliente");
         console.log("2 - O cliente ja é cadastrado");
-        console.log("9 - Desligar programa");
+        console.log("9 - Passar para a página de pedidos");
 
         customer_registration = parseInt(rs.question("\nQual opcao voce deseja realizar? "));
     
@@ -455,9 +448,6 @@ if (escolhaInc === '1') {
 
   console.log(`\nForma de pagamento escolhida: ${formaPagamentoEscolhida.nome}`);
 
-  console.log(`\nPedido Realizado com sucesso! Só aguardar...`);
-
-
   // ---------------------------- Salvar no Pedidos.csv ----------------------------
 
   if (pedidoPizzas.length > 0) { //caso o pedido tenha sido feito ele salva
@@ -483,6 +473,7 @@ escolhaInc === 2
 //!! ------ funções utilizada para escolhaInc === '2' ------ !!
 
 // Caminho do CSV
+
 const pedidosPath = path.join(__dirname, "Pedidos.csv");
 
 function gerarRecibo(pedidos: Record<string, string>[]) {
@@ -501,7 +492,7 @@ pedidos.forEach((p, i) => {
   const preco = parseFloat(p["precoTotal"]);
   total += preco;
   console.log(
-    `${i + 1}. Pizzas: ${p["pizza(s)"]} | Bebidas: ${p["bebida(s)"]} | Sobremesas: ${p["sobremesa(s)"]}  - R$ ${preco.toFixed(2)}`
+    `${i + 1}. Pizzas: ${p["pizza(s)"]} | Bebidas: ${p["bebida(s)"]} | Sobremesas: ${p["sobremesa(s)"]}  - R$ ${preco.toFixed(2)}\nPedido realizado às`
   );
 });
 
@@ -509,7 +500,8 @@ console.log("----------------------------");
 console.log(`Total gasto na pizzaria: R$ ${total.toFixed(2)}\n`);
 }
 
-// Função que lê e filtra pedidos
+//Função que lê e filtra pedidos
+
 function buscarPedidosPorCliente(identificador: string) {
   const conteudo = fs.readFileSync(pedidosPath, "utf-8");
   const linhas = conteudo.trim().split("\n");
@@ -584,7 +576,7 @@ return pedido;
 
 console.log("\n====== RELATÓRIO GERAL ======\n");
 
-// Total arrecadado
+//Total arrecadado
 
 let totalArrecadado = 0; //Inicia o total arrecadado como zero
 pedidos.forEach(p => totalArrecadado += parseFloat(p.precoTotal)); // Acrescenta o valor do precoTotal de cada linha ao totalArrecadado
@@ -592,7 +584,7 @@ pedidos.forEach(p => totalArrecadado += parseFloat(p.precoTotal)); // Acrescenta
 console.log(`📌 Total de pedidos registrados: ${pedidos.length}`);
 console.log(`💰 Valor total arrecadado: R$ ${totalArrecadado.toFixed(2)}\n`);
 
-// Agrupar por cliente
+//Agrupar por cliente
 
 const vendasPorCliente: Record<string, number> = {};
 pedidos.forEach(p => {
@@ -603,19 +595,6 @@ pedidos.forEach(p => {
 console.log("📊 Vendas por Cliente:");
 for (const cliente in vendasPorCliente) {
   console.log(` - ${cliente}: R$ ${vendasPorCliente[cliente].toFixed(2)}`);
-}
-
-// Agrupar por produto
-
-const vendasPorProduto: Record<string, number> = {};
-pedidos.forEach(p => {
-  const produto = p.produto;
-  vendasPorProduto[produto] = (vendasPorProduto[produto] || 0) + parseFloat(p.precoTotal);
-});
-
-console.log("\n🍕 Vendas por Produto:");
-for (const produto in vendasPorProduto) {
-  console.log(` - ${produto}: R$ ${vendasPorProduto[produto].toFixed(2)}`);
 }
 
 console.log("\n====== FIM DO RELATÓRIO ======\n");
